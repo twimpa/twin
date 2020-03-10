@@ -3,12 +3,16 @@
   <head>
     <title>Rec2D</title>
     <meta charset="utf8">
-    <script type="text/javascript" src="src/canvas_rec2d.js"></script>
+    <script type="text/javascript" src="src/common_canvas.js"></script>
+    <script type="text/javascript" src="src/TWImage.js"></script>
+    <script type="text/javascript" src="src/TWStack.js"></script>
+   <script type="text/javascript" src="src/TWStackSplitter.js"></script>
     <script type="text/javascript" src="src/nodes.js"></script>
     <script>
     const main = () => {
       
       // Case 1: function map(..)
+      console.info('Case #1');
       const t00 = performance.now();
 
       let input = document.getElementById('input');
@@ -27,6 +31,8 @@
       console.log(`Performance: ${(t01 - t00)} milliseconds.`);
       
       // Case 2: No function map(..) - 
+      console.info('Case #2');
+      console.log(range(0,-180,-1));
       const t10 = performance.now();
       let proto = sinogram
         .toStack(h,1)
@@ -34,7 +40,7 @@
           .resize(w,w)
           .rotate(range(0,-180,-1) )
         .saveInStack()
-        .zproject(TWIN.AVERAGE)
+        .zproject()
         .normalize({cx: 0.5,cy: 0.5,radius:0.4})
         .show();
         
@@ -42,6 +48,9 @@
       console.log(`Performance: ${(t11 - t10)} milliseconds.`);
       
       // Case 3: Use of nodes graph
+      console.info('Case #3');
+        
+      // Case 4: Graph defined as JSON
       const nodes = [
         {
           id: 0,

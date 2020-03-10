@@ -1,35 +1,59 @@
 ///////////: N O D E S :///////////
 
-const start = async (args) => {
+/*
+ * start time for performance measurement.
+ *
+ *
+ */
+ const start = async (args) => {
   args.time_start = performance.now();
   return args;
 }
 
+/*
+ * End time for performance measurement.
+ *
+ *
+ */
 const end = async (args) => {
   args.performance = performance.now() - args.time_start;
   console.info(`Performance: ${args.performance} milliseconds.`);
   return args;
 }
 
+/*
+ * Python `range(..)`
+ *
+ *
+ */
 const nrange = (start,end,step=1) => async (args) => {
   args.array = Array.from({length: Math.abs(Math.floor((end - start) / step))}, (_,i) => start + i * step);
   return args;
 };
 
+/*
+ * Split the stack slices in a stream
+ *
+ */
 const forEach = async (args) => {
   // TODO Check `input`is a stack
-  args.input = new TWSplitter(args.input);
+  args.input = new TWStackSplitter(args.input);
   return args;
 }
 
+
+/*
+ * Get information of raster
+ *
+ */
 const info = async (args) => {
   args.width = args.input.width;
   args.height = args.input.height
   return args;
 };
-    
+
 /*
- *
+ * Load an image (jpg, png, gif)
  *
  */
 const load = async (args) => {
@@ -56,7 +80,6 @@ const load = async (args) => {
   }
   
   // Main
-  console.log(args);
   let raster = await preloadRaster(args.path);
   let w = raster.naturalWidth;
   let h = raster.naturalHeight;
@@ -75,7 +98,7 @@ const load = async (args) => {
 }
 
 /*
- *
+ * Normalize a raster
  *
  */
 const normalize = (roi) => async (args) => {
@@ -85,18 +108,17 @@ const normalize = (roi) => async (args) => {
 }
 
 /*
- *
+ * Convert a 2D raster/image into a stack
  *
  */
 const toStack = (nRows,nCols,border) => async (args) => {
-  console.log(args);
   // TODO Check if `input`is an image
   args.input = args.input.toStack(nRows,nCols,border);
   return args;
 }
 
 /*
- *
+ * Resize a 2D raster
  *
  */
 const resize = (new_width,new_height,type=-1) => async (args) => {
@@ -106,7 +128,7 @@ const resize = (new_width,new_height,type=-1) => async (args) => {
 }
 
 /*
- *
+ * Rotate a 2D raster
  *
  */
 const rotate = async (args) =>{
@@ -116,7 +138,7 @@ const rotate = async (args) =>{
 }
 
 /*
- *
+ * Save in the current stack. Must be used in conjunction with `forEach(..)`
  *
  */
 const saveInStack = async (args) =>{
@@ -126,17 +148,19 @@ const saveInStack = async (args) =>{
 }
 
 /*
- *
- *
+ * Display in full-size a raster.
+ * This node triggers the pipeline of full-size raster(s).
+ * 
+ * @param {object} args - A collection of parameters
+ * 
+ * @author Jean-Christophe Taveau.
  */
 const show = async (args) => {
-  console.log(args);
-  console.log(args.input);
   args.input.show();
 }
 
 /*
- *
+ * Z-project a stack to get an image (2D raster)
  *
  */
 const zproject = async (args) => {
