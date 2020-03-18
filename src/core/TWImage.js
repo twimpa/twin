@@ -136,9 +136,9 @@ class TWImage {
     return this;
   }
   
-  show() {
+  show(id) {
     let canvas = document.createElement('canvas');
-    canvas.id = `show`;
+    canvas.id = `show_${id}`;
     document.body.append(canvas);
     canvas.width = this.width;
     canvas.height = this.height;
