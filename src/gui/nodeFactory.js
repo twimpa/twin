@@ -1,8 +1,8 @@
 /*
- *  TWIP: Tiny Web Image Processing Visual Tool
+ *  TWIN: Tiny Web Image Nodes
  *  Copyright (C) 2019  Jean-Christophe Taveau.
  *
- *  This file is part of TWIP
+ *  This file is part of TWIN
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with TWIP.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with TWIN.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * Authors:
@@ -24,8 +24,10 @@
 
 'use strict';
 
+import {Socket} from './socket.js';
 
-class NodeFactory {
+
+export class NodeFactory {
 
   /**
    * 
@@ -377,27 +379,21 @@ class NodeFactory {
   static input_socket(row,id) {
     let container = document.createElement('div');
     container.className = 'input';
-    let button = document.createElement('button');
-    button.id = `insock_${id}[0]`;
-    button.innerHTML = '<i class="fas fa-chevron-circle-right"></i>';
-    draggable(button,edgeStart,edgeDrag,edgeEnd);
-    container.appendChild(button);
+    let socket = new Socket(id,'input');
+    container.appendChild(socket.button);
     return container;
   }
 
   /*
+   * Create an output socket
    * 
    * @author Jean-Christophe Taveau
    */
   static output_socket(row,id) {
     let container = document.createElement('div');
     container.className = 'output';
-    // container.innerHTML = '<button><i class="fas fa-chevron-circle-right"></i></button>';
-    let button = document.createElement('button');
-    button.id = `outsock_${id}[0]`;
-    button.innerHTML = '<i class="fas fa-chevron-circle-right"></i>';
-    draggable(button,edgeStart,edgeDrag,edgeEnd);
-    container.appendChild(button);
+    let socket = new Socket(id,'output');
+    container.appendChild(socket.button);
 
     return container;
   }

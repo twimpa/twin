@@ -1,0 +1,40 @@
+{
+  "name": "twin",
+  "version": "0.0.1",
+  "description": "Tiny Web Image Nodes",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "webpack --env=dev",
+    "prod": "webpack --env=prod",
+    "start": "webpack-dev-server --env=dev --open",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twimpa/twin.git"
+  },
+  "keywords": [
+    "ImageJ",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "image",
+    "image_processing",
+    "processing"
+  ],
+  "author": "Jean-Christophe Taveau",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/twimpa/twin/issues"
+  },
+  "homepage": "https://github.com/twimpa/twin#readme",
+  "devDependencies": {
+    "terser-webpack-plugin": "^2.3.5",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
+}

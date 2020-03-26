@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<title>TWIN Chessboard</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet"> 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="../css/twin.css">
+<script type="text/javascript" src="../dist/twin.js"></script>
+
+</head>
+<body>
+<main>
+</main>
+
+<script type="text/javascript">
+
+'use strict';
+
+  ////// MAIN //////
+
+  let main = document.querySelector('main');
+
+  TWIN.init();
+  
+  fetch('../templates/nodes.json', {
+    method: 'GET',
+    headers: new Headers({'Content-Type': 'application/json'}),
+    mode: 'cors',
+    cache: 'default'
+
+  })
+  .then ( response => response.json() )
+  .catch ( error => {
+    alert(`Something went wrong - ${error}`)
+  })
+  .then ( nodeTemplates => {
+    console.log(nodeTemplates);
+    // Create Board + Graph
+    let board = new Board(main, nodeTemplates);
+
+    // Load Test Graph
+    const test = {
+      nodes: [
+        {
+          id: 0,
+          template:1,
+          pos: [0,0],
+          metadata: {
+            type: "8-bit",
+            width: 256,
+            height: 256,
+            fill: 0,
+            nslices: 1
+          }
+        },
+        {
+          id: 3,
+          template:71,
+          pos: [0,0],
+          metadata: {
+            comment: "range",
+            start: 0,
+            stop: 8,
+            step: 1
+          }
+        },
+        {
+          id: 5,
+          template:71,
+          pos: [0,0],
+          metadata: {
+            comment: "range",
+            start: 0,
+            stop: 8,
+            step: 1
+          }
+        },
+        {
+          id: 22,
+          template:11,
+          pos: [0,0],
+          metadata: {
+            comment: "viewer2D"
+          }
+        },
+        {
+          id: 30,
+          template:26,
+          pos: [0,0],
+          metadata: {
+            comment: "duplicate",
+            copies: 8
+          }
+        },
+        {
+          id: 32,
+          template:36,
+          pos: [0,0],
+          metadata: {
+            comment: "resize",
+          }
+        },
+        {
+          id: 34,
+          template:84,
+          pos: [0,0],
+          metadata: {
+            comment: "zip"
+          }
+        },
+        {
+          id: 35,
+          template:73,
+          pos: [0,0],
+          metadata: {
+            comment: "unfold"
+          }
+        },
+        {
+          id: 40,
+          template:81,
+          pos: [0,0],
+          metadata: {
+            code: "x = index % 8"
+          }
+        },
+        {
+          id: 41,
+          template:28,
+          pos: [0,0],
+          metadata: {
+            comment: "roi"
+          }
+        },
+        {
+          id: 42,
+          template:74,
+          pos: [0,0],
+          metadata: {
+            comment: "fold"
+          }
+        },
+        {
+          id: 50,
+          template:27,
+          pos: [0,0],
+          metadata: {
+            comment: "fill"
+          }
+        }
+      ],
+      edges : [
+        {
+          eid: 1,
+          source: 0,out: 0,
+          target: 50, in: 1,
+        },
+        {
+          eid: 2,
+          source: 3,out: 0,
+          target: 32, in: 0,
+        },
+        {
+          eid: 4,
+          source: 5,out: 0,
+          target: 30, in: 0,
+        },
+        {
+          eid: 5,
+          source: 32,out: 0,
+          target: 34, in: 0,
+        },
+        {
+          eid: 6,
+          source: 30,out: 0,
+          target: 34, in: 1,
+        },
+        {
+          eid: 7,
+          source: 34,out: 0,
+          target: 35, in: 0,
+        },
+        {
+          eid: 8,
+          source: 35,out: 0,
+          target: 40, in: 0,
+        },
+        {
+          eid: 9,
+          source: 41,out: 0,
+          target: 50, in: 0,
+        },
+        {
+          eid: 10,
+          source: 40,out: 0,
+          target: 41, in: 0,
+        },
+        {
+          eid: 11,
+          source: 40,out: 0,
+          target: 41, in: 1,
+        },
+        {
+          eid: 12,
+          source: 50,out: 0,
+          target: 42, in: 0,
+        },
+        {
+          eid: 14,
+          source: 42,out: 0,
+          target: 22, in: 0,
+        }
+      ]
+    };
+
+/*
+        {
+          eid: 3,
+          source: 41,out: 0,
+          target: 50, in: 1,
+        },
+        {
+          eid: 7,
+          source: 34,out: 0,
+          target: 5, in: 0,
+        },
+        {
+          eid: 11,
+          source: 40,out: 0,
+          target: 50, in: 0,
+        },
+        {
+          eid: 13,
+          source: 50,out: 0,
+          target: 34, in: 0,
+        },
+*/
+    board.load(test);
+    board.run();
+  }); 
+
+</script>
+</body>
+</html>

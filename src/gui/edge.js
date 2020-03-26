@@ -1,8 +1,8 @@
 /*
- *  TWIP: Tiny Web Image Processing Visual Tool
- *  Copyright (C) 2019  Jean-Christophe Taveau.
+ *  TWIN: Tiny Web Image Nodes
+ *  Copyright (C) 2019-2020  Jean-Christophe Taveau.
  *
- *  This file is part of TWIP
+ *  This file is part of TWIN
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with TWIP.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with TWIN.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * Authors:
@@ -24,7 +24,10 @@
 
 'use strict';
 
-class Edge {
+import {xmlns} from './common.js';
+
+
+export class Edge {
 
   constructor(edge_id,source_id,target_id,input_connector = 0, output_connector = 0) {
     this.eid = edge_id;

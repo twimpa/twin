@@ -1,8 +1,8 @@
 /*
- *  TWIP: Tiny Web Image Processing Visual Tool
- *  Copyright (C) 2019  Jean-Christophe Taveau.
+ *  TWIN: Tiny Web Image Nodes
+ *  Copyright (C) 2019-2020  Jean-Christophe Taveau.
  *
- *  This file is part of TWIP
+ *  This file is part of TWIN
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with TWIP.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with TWIN.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
  * Authors:
@@ -24,10 +24,14 @@
 
 'use strict';
 
+import {Draggable,dragStartNode,dragOverNode, dragEndNode,resizeStart,resizeMove, resizeEnd} from './draggable.js';
+import {NodeFactory} from './nodeFactory.js';
 
-class Node {
+
+export class Node extends Draggable {
 
   constructor(id,template,metadata) {
+    super();
     this.id = id;
     this.template = template;
     this.element = document.createElement('section');
@@ -90,10 +94,10 @@ class Node {
           <span class="expandB">&#9662;</span>
           <span class="shrinkB">&#9656;</span>
         </a>
-        &nbsp;&nbsp;#${node.id} - ${desc} &nbsp;${preview}
+        &nbsp;&nbsp;${desc} &nbsp;${preview}
       </p>`;
 
-    draggable( head,dragStartNode,dragOverNode, dragEndNode);
+    this.draggable( head,dragStartNode,dragOverNode, dragEndNode);
     return head;
   }
 
@@ -165,7 +169,7 @@ class Node {
 
     let foot = document.createElement('div');
     foot.className = 'footer';
-    foot.innerHTML = `<span style="align:right;margin:2px">${node.class}</span>`;
+    foot.innerHTML = `<span style="align:right;margin:2px">${node.class} #${node.id}</span>`;
     let link = document.createElement('a');
     foot.appendChild(link);
     link.dataset.nodeid = id;
@@ -179,7 +183,7 @@ class Node {
         <circle cx="18" cy="18" r="2" stroke="none" fill="#777"/>
       </svg>`; 
 
-    draggable( link,resizeStart,resizeMove, resizeEnd);
+    this.draggable( link,resizeStart,resizeMove, resizeEnd);
     return foot;
   }
 

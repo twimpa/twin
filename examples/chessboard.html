@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<title>TWIN Chessboard</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet"> 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="../css/twin.css">
+<script type="text/javascript" src="../javascripts/twin.js"></script>
+
+</head>
+<body>
+<main>
+</main>
+
+<script type="text/javascript">
+  'use strict';
+
+
+
+  ////// MAIN //////
+
+  let main = document.querySelector('main');
+
+  fetch('../templates/nodes.json', {
+    method: 'GET',
+    headers: new Headers({'Content-Type': 'application/json'}),
+    mode: 'cors',
+    cache: 'default'
+
+  })
+  .then ( response => response.json() )
+  .catch ( error => {
+    alert(`Something went wrong - ${error}`)
+  })
+  .then ( nodeTemplates => {
+    console.log(nodeTemplates);
+    // Create Graph
+    TWIP.nodeTemplates = nodeTemplates;
+
+    // Create Edges
+    let svg = document.createElementNS(xmlns,'svg');
+    svg.setAttribute('width','100%');
+    svg.setAttribute('height','100%');
+
+    main.prepend(svg);
+    let boardgame = document.createElement('div');
+    boardgame.id = 'board';
+    boardgame.className = 'board';
+    main.appendChild(boardgame);
+
+    // Load Test Graph
+    let test = {
+      nodes: [
+        {
+          id: 0,
+          template:1,
+          pos: [0,0],
+          metadata: {
+            type: "8-bit",
+            width: 8,
+            height: 8,
+            fill: 0,
+            nslices: 1
+          }
+        },
+        {
+          id: 3,
+          template:32,
+          pos: [0,0],
+          metadata: {
+            macro: "v = ((x+y) % 2 === 0) ? 0 : 255"
+          }
+        },
+        {
+          id: 5,
+          template:36,
+          pos: [0,0],
+          metadata: {
+            interpolation: "Nearest",
+            rsz_width: 256,
+            rsz_height: 256
+          }
+        },
+        {
+          id: 22,
+          template:11,
+          pos: [0,0],
+          metadata: {
+          }
+        }
+      ],
+      edges : [
+        {
+          eid: 1,
+          source: 0,out: 0,
+          target: 3, in: 0,
+        },
+        {
+          eid: 2,
+          source: 3,out: 0,
+          target: 5, in: 2,
+        },
+        {
+          eid: 3,
+          source: 5,out: 0,
+          target: 22, in: 0,
+        }
+      ]
+    };
+
+    TWIP.graph.setTemplates(nodeTemplates);
+    TWIP.graph.setRootNode(boardgame);
+    TWIP.graph.setGraphicsContext(svg);
+    TWIP.graph.build(test);
+    TWIP.graph.show();
+
+    TWIP.init();
+  }); 
+
+</script>
+</body>
+</html>
