@@ -3,13 +3,13 @@
   <head>
     <title>Rec2D</title>
     <meta charset="utf8">
-    <script type="text/javascript" src="src/common_canvas.js"></script>
-    <script type="text/javascript" src="src/TWImage.js"></script>
-    <script type="text/javascript" src="src/TWStack.js"></script>
-    <script type="text/javascript" src="src/TWStackSplitter.js"></script>
-    <script type="text/javascript" src="src/TWGraph.js"></script>
-    <script type="text/javascript" src="src/nodes.js"></script>
-    <script type="text/javascript" src="src/graph.js"></script>
+    <script type="text/javascript" src="src/core/common_canvas.js"></script>
+    <script type="text/javascript" src="src/core/TWImage.js"></script>
+    <script type="text/javascript" src="src/core/TWStack.js"></script>
+    <script type="text/javascript" src="src/core/TWStackSplitter.js"></script>
+    <script type="text/javascript" src="src/core/TWGraph.js"></script>
+    <script type="text/javascript" src="src/core/nodes/nodes.js"></script>
+    <script type="text/javascript" src="src/core/graph.js"></script>
     <script>
     const main = () => {
       
@@ -69,13 +69,13 @@
           normalize({cx: 0.5,cy: 0.5,radius:0.4}),
           end,
           show
-        ],{path:'./data/Sinogram_ramp_filter.png', count: 0});
+        ],{path:'./examples/data/Sinogram_ramp_filter.png', count: 0});
     }
 
     </script>
   </head>
   <body onload="main()">
-    <img id="input" src="./data/Sinogram_ramp_filter.png"></img >
+    <img id="input" src="./examples/data/Sinogram_ramp_filter.png"></img >
     <!--img id="input" src="sinogram.png"></img-->
   </body>
 </html>

@@ -31,7 +31,7 @@ main {
 
 section {
   position:absolute;
-  width: fit-content;
+  width: min-content;
   /* max-width: 200px; */
   /* background-color: black; */
   border: 1px solid black;
@@ -284,11 +284,12 @@ svg {
   display: flex;
   flex-flow: row wrap;
   flex: 1;
+  justify-content: space-between;
 }
 
 .row-1 {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
   text-align: right;
 }
 
@@ -298,13 +299,15 @@ svg {
 
 .row-2 {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
   align-items: stretch;
   text-align: right;
+  justify-content: space-between;
 }
 
 .row-2 .flex-cell:nth-child(1) {
   width: 40%;
+  /* margin-right: 10px; */
 }
 
 .row-2 .flex-cell:nth-child(2) {
@@ -318,7 +321,7 @@ svg {
 }
 
 .body label {
-  margin-right: 8px;
+  /* margin-right: 8px; */
   text-align: right;
 }
 

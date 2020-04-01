@@ -49,7 +49,7 @@ export class NodeFactory {
     return element;
   }
 
-  static createContent(rows,parent,id) {
+  static createContent(rows,parent,id, metadata) {
     let nodeid = id;
     let outputs = 0;
     let inputs = 0;
@@ -63,7 +63,7 @@ export class NodeFactory {
         container.style.display = (index === 0) ? 'block': 'none';
       }
       else {
-        let container = NodeFactory.createRow(row,nodeid);
+        let container = NodeFactory.createRow(row,nodeid,metadata[row.name]);
         if (row.output !== undefined) {
           container.id = `o_${outputs++}`;
           container.classList.add('output');
@@ -100,7 +100,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static createRow(row,node_id) {
+  static createRow(row,node_id, metadata) {
     // Extract widget type
     let cells = Object.keys(row).filter( prop => ['name','source','zip'].indexOf(prop) === -1);
     let numcolumns = cells.filter( type => ['input','output','source','name','zip'].indexOf(type) === -1).length;
@@ -109,7 +109,7 @@ export class NodeFactory {
 
     cells.forEach( type => {
       console.log(type);
-      let widget = NodeFactory.createWidget(type,row,node_id);
+      let widget = NodeFactory.createWidget(type,row,node_id,metadata);
       container.appendChild(widget);
     });
 
@@ -117,22 +117,22 @@ export class NodeFactory {
     return container;
   }
 
-  static createWidget(type,row,id) {
+  static createWidget(type,row,id,value) {
     let element;
     switch (type) {
-      case 'button': element = NodeFactory.button(row,id); break;
-      case 'canvas': element = NodeFactory.canvas(row,id); break;
-      case 'checkbox': element = NodeFactory.checkbox(row,id); break;
-      case 'file': element = NodeFactory.file(row,id); break;
-      case 'flowcontrols': element = NodeFactory.flowcontrols(row,id); break;
-      case 'input': element = NodeFactory.input_socket(row,id); break;
-      case 'label': element = NodeFactory.label(row,id); break;
-      case 'numerical': element = NodeFactory.numerical(row,id); break;
-      case 'readonly': element = NodeFactory.readonly(row,id); break;
-      case 'selectlayer': element = NodeFactory.selectlayer(row,id); break;
-      case 'select': element = NodeFactory.select(row,id); break;
-      case 'output': element = NodeFactory.output_socket(row,id); break;
-      case 'text': element = NodeFactory.text(row,id); break;
+      case 'button': element = NodeFactory.button(row,id,value); break;
+      case 'canvas': element = NodeFactory.canvas(row,id,value); break;
+      case 'checkbox': element = NodeFactory.checkbox(row,id,value); break;
+      case 'file': element = NodeFactory.file(row,id,value); break;
+      case 'flowcontrols': element = NodeFactory.flowcontrols(row,id,value); break;
+      case 'input': element = NodeFactory.input_socket(row,id,value); break;
+      case 'label': element = NodeFactory.label(row,id,value); break;
+      case 'numerical': element = NodeFactory.numerical(row,id,value); break;
+      case 'readonly': element = NodeFactory.readonly(row,id,value); break;
+      case 'selectlayer': element = NodeFactory.selectlayer(row,id,value); break;
+      case 'select': element = NodeFactory.select(row,id,value); break;
+      case 'output': element = NodeFactory.output_socket(row,id,value); break;
+      case 'text': element = NodeFactory.text(row,id,value); break;
       default: 
         alert(`Unknown widget ${type}`);
     }
@@ -142,7 +142,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static button(row,id) {
+  static button(row,id,value) {
     let container = document.createElement('div');
     container.className = 'flex-cell';
     let e = document.createElement('button');
@@ -158,7 +158,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static canvas(row,id) {
+  static canvas(row,id,value) {
     // <div class="graphics"><canvas></canvas></div>
     let container = document.createElement('div');
     container.className = 'graphics';
@@ -170,15 +170,15 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static checkbox(row,id) {
+  static checkbox(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
     input.className = "check";
     input.setAttribute("type", "checkbox");
-    input.setAttribute('name',row.var || 'unknown');
-    input.setAttribute('value',row.checkbox);
+    input.setAttribute('name',row.name || 'unknown');
+    input.setAttribute('value',value || row.checkbox);
     input.checked = row.checkbox;
     container.appendChild(input);
 
@@ -190,15 +190,15 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static file(row,id) {
+  static file(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
     input.className = "check";
     input.setAttribute("type", "file");
-    input.setAttribute('name',row.var || 'unknown');
-    input.setAttribute('value',row.checkbox);
+    input.setAttribute('name',row.name || 'unknown');
+    input.setAttribute('value',value);
     input.checked = row.checkbox;
     container.appendChild(input);
 
@@ -210,7 +210,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static flowcontrols(row,id) {
+  static flowcontrols(row,id,value) {
     let buttons = row.flowcontrols.toString(2);
     console.log(buttons);
     let container = document.createElement('div');
@@ -253,22 +253,56 @@ export class NodeFactory {
     return container;
   }
 
+  /*
+   * Create an input socket
+   *
+   * @author Jean-Christophe Taveau
+   */
+  static input_socket(row,id,value) {
+    let container = document.createElement('div');
+    container.className = 'input';
+    let socket = new Socket(id,'input');
+    container.appendChild(socket.button);
+    return container;
+  }
+  
+  
+  /*
+   * 
+   * @author Jean-Christophe Taveau
+   */
+  static label(row,id,value) {
+    let container = document.createElement('div');
+    container.className = 'flex-cell';
+    let e = document.createElement('label');
+    e.innerHTML = row.label;
+    if (row.output === undefined && row.input === undefined) {
+      e.innerHTML += '&nbsp;';
+    }
+    else {
+      // e.title = metadata.input || metadata.output;
+    }
+    container.appendChild(e);
+    return container;
+  }
+
+  
   /**
    * 
    * @author Jean-Christophe Taveau
    */
-  static numerical(row,id) {
+  static numerical(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
     input.className = "numerical";
     input.setAttribute("type", "text");
-    input.setAttribute('name',row.var || 'unknown');
+    input.setAttribute('name',row.name || 'unknown');
     input.setAttribute('minlength',4);
-    input.setAttribute('maxlength',8);
-    input.setAttribute('size',10);
-    input.setAttribute('value',row.numerical);
+    input.setAttribute('maxlength',40);
+    // input.setAttribute('size',10);
+    input.setAttribute('value',value || row.numerical);
     input.addEventListener('input',(event)=> {
       let value = event.srcElement.value;
       event.srcElement.value = /^\d*\.?\d*$/.test(event.srcElement.value) ? value : value.slice(0,-1);
@@ -283,7 +317,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static readonly(row,id) {
+  static readonly(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
@@ -291,11 +325,11 @@ export class NodeFactory {
     input.className = "readonly";
     input.readOnly = true;
     input.setAttribute("type", "text");
-    input.setAttribute('name',row.var || 'unknown');
+    input.setAttribute('name',row.name || 'unknown');
     input.setAttribute('minlength',4);
-    input.setAttribute('maxlength',8);
-    input.setAttribute('size',10);
-    input.setAttribute('value',row.readonly);
+    input.setAttribute('maxlength',40);
+    // input.setAttribute('size',10);
+    input.setAttribute('value',value || row.readonly);
 
     container.appendChild(input);
     // TODO Add event onchanged
@@ -306,7 +340,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static select(row,id) {
+  static select(row,id,value) {
     let container = document.createElement('div');
     container.className = "flex-cell select-container";
     let select = document.createElement('select');
@@ -320,7 +354,7 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static selectlayer(row,id) {
+  static selectlayer(row,id,value) {
     let container = document.createElement('div');
     container.className = "flex-cell select-container";
     let select = document.createElement('select');
@@ -337,59 +371,67 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static text(row,id) {
+  static text(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
     input.className = "numerical";
     input.setAttribute("type", "text");
-    input.setAttribute('name',row.var || 'unknown');
+    input.setAttribute('name',row.name || 'unknown');
     input.setAttribute('minlength',4);
-    input.setAttribute('maxlength',8);
-    input.setAttribute('size',10);
-    input.setAttribute('value',row.text);
+    input.setAttribute('maxlength',40);
+    //input.setAttribute('size',10);
+    input.setAttribute('value',value || row.text);
+    
+    // Create a `dummy` div to compute width
+    /*
+    let div = document.querySelector('#input-helper');
+    if (!div) {
+      div = document.createElement("div");
+      div.id = "input-helper";
+      document.body.appendChild(div);
+    }
+
+    input.addEventListener("keyup", () => {
+        div.textContent = event.target.value;
+        console.info('keypup',event.target.value);
+        input.style.width = div.offsetWidth + 15 + "px";
+    });
+    */
+    /* 
+     CSS
+     
+      overflow: hidden;
+      text-overflow: ellipsis;
+      
+      input,
+      #input-helper {
+          display: inline;
+          font-size: 14px;
+          font-family: serif;
+          line-height: 16px;
+      }
+
+      #input-helper {
+          position: absolute;
+          top: -10000px;
+      }
+     */
 
     container.appendChild(input);
     // TODO Add event onchanged
     return container;
   }
 
-  /*
-   * 
-   * @author Jean-Christophe Taveau
-   */
-  static label(row,id) {
-    let container = document.createElement('div');
-    container.className = 'flex-cell';
-    let e = document.createElement('label');
-    e.innerHTML = row.label;
-    if (row.output === undefined && row.input === undefined) {
-      e.innerHTML += ':&nbsp;';
-    }
-    container.appendChild(e);
-    return container;
-  }
 
-  /*
-   * Create an input socket
-   *
-   * @author Jean-Christophe Taveau
-   */
-  static input_socket(row,id) {
-    let container = document.createElement('div');
-    container.className = 'input';
-    let socket = new Socket(id,'input');
-    container.appendChild(socket.button);
-    return container;
-  }
 
   /*
    * Create an output socket
    * 
    * @author Jean-Christophe Taveau
    */
-  static output_socket(row,id) {
+  static output_socket(row,id,value) {
     let container = document.createElement('div');
     container.className = 'output';
     let socket = new Socket(id,'output');

@@ -472,6 +472,20 @@
     ]
   },
   {
+    "id": 52,
+    "class": "information",
+    "name": "TWIP_INSPECT",
+    "description": "Inspect",
+    "help": "Inspect Node: inputs, attributes, outputs",
+    "properties": [
+      {"label": "Component","select": ["Inputs","Attributes","Outputs"],"name": "component"},
+      {"layer": "Inputs", "type": "content","properties": []},
+      {"layer": "Attributes", "type": "content", "properties": []},
+      {"layer": "Outputs", "type": "content", "properties": []},
+      {"label": "Node", "input": "node"}
+    ]
+  },
+  {
     "id": 60,
     "class": "programming",
     "description": "Variable",
@@ -571,9 +585,9 @@
     "help": "Python function range(..)",
     "properties": [
       {"label": "Flow", "output": "data"},
-      {"label": "Start", "numerical": 0},
-      {"label": "Stop", "numerical": 10},
-      {"label": "Step", "numerical": 1}
+      {"label": "Start", "numerical": 0, "name": "start"},
+      {"label": "Stop", "numerical": 10, "name": "stop"},
+      {"label": "Step", "numerical": 1, "name": "step"}
     ]
   },
   {
@@ -592,21 +606,22 @@
   {
     "id": 73,
     "class": "programming",
-    "name": "TWIP_UNFOLD",
-    "description": "Unfold",
-    "help": "forEach item of Iterable.\nCombined with `fold` is equivalent to map(..)",
+    "name": "TWIP_FOLD",
+    "description": "Fold",
+    "help": "forEach item of Iterable.\nCombined with `Aggregate` is equivalent to reduce(..)",
     "properties": [
       {"label": "Data", "output": "data"},
       {"label": "Axis", "select": ["X","Y","Z","W"]},
+      {"label": "Accumulator", "input": "accumulator"},
       {"label": "Array", "input": "array"}
     ]
   },
   {
     "id": 74,
     "class": "programming",
-    "name": "TWIP_FOLD",
-    "description": "Fold",
-    "help": "Store N-dimensional input in an Array of dimension N+1.\nCombined with `unfold` is equivalent to map(..)",
+    "name": "TWIP_AGGREGATE",
+    "description": "Aggregate",
+    "help": "Store N-dimensional input in an Array of dimension N+1.\nMust be combined with `fold` or `map`",
     "properties": [
       {"label": "Data", "input": "data"},
       {"label": "Append", "checkbox": true, "name": "append"},
@@ -635,7 +650,7 @@
       {"label": "Data", "input": "data"},
       {"label": "Init", "input": "init"},
       {"label": "Axis", "select": ["X","Y","Z","W"]},
-      {"label": "Expr.", "text": "accu + v"},
+      {"label": "Expr.", "select": ["Sum","Average","Std.Dev","Variance"]},
       {"label": "Data", "output": "data"}
     ]
   },
@@ -659,25 +674,33 @@
     "description": "Set..",
     "help": "Set data (slices, pixels, numbers, etc.) in a variable",
     "properties": [
-      {"label": "Variable", "output": "variable"},
-      {"label": "Expr", "text": "x = 0","name": "code"},
-      {"label": "Expr", "text": "y = 0","name": "code"},
+      {"label": "Expr", "text": "x = 0","output": "code1"},
+      {"label": "Expr", "text": "y = 0","output": "code2"},
+      {"label": "Expr", "text": "z = 0","output": "code3"},
+      {"label": "&nbsp;", "button": "More..."},
       {"label": "Data", "input": "data"}
     ]
   },
   {
     "id": 82,
     "class": "programming",
-    "name": "TWIP_GROUP",
-    "description": "Group",
-    "help": "Group various data (slices, pixels, numbers, etc.) in one single storage",
+    "name": "TWIP_SET_STORAGE",
+    "description": "Store As",
+    "help": "Set Data in Global Storage",
     "properties": [
-      {"label": "Data", "output": "data"},
-      {"label": "#1","input": "var1"},
-      {"label": "#2","input": "var2"},
-      {"label": "#3","input": "var3"},
-      {"label": "#4","input": "var4"},
-      {"label": "#5","input": "var5"}
+      {"label": "Item","text": "myData", "name": "set_item"},
+      {"label": "Data","input": "data"}
+    ]
+  },
+  {
+    "id": 83,
+    "class": "programming",
+    "name": "TWIP_GET_STORAGE",
+    "description": "Get From Storage",
+    "help": "Get Data from Global Storage",
+    "properties": [
+      {"label": "Item", "output": "data"},
+      {"label": "Name","text": "myData", "name": "get_item"}
     ]
   },
   {
@@ -685,7 +708,7 @@
     "class": "programming",
     "name": "TWIP_ZIP",
     "description": "Zip",
-    "help": "Zip (interleave) two datasets of same length",
+    "help": "Zip (interleave) two datasets of same lengths",
     "properties": [
       {"label": "Data", "output": "data"},
       {"label": "#1","input": "var1"},

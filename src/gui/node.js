@@ -53,8 +53,8 @@ export class Node extends Draggable {
     console.log('CREATE ' + node.description);
     let nodeH = this.element;
     nodeH.id = 'node_'+id;
-    nodeH.style.left = (metadata.x) ? `${metadata.x}px`: `${Math.floor(Math.random() * 1000)}px`;
-    nodeH.style.top  = (metadata.y) ? `${metadata.y}px`: `${Math.floor(Math.random() * 600)}px`;
+    nodeH.style.left = (metadata.pos) ? `${metadata.pos[0]}px`: `${Math.floor(Math.random() * 1000)}px`;
+    nodeH.style.top  = (metadata.pos) ? `${metadata.pos[1]}px`: `${Math.floor(Math.random() * 600)}px`;
 
     // Head
     let head = this.createHeader(node,id,metadata);
@@ -130,7 +130,7 @@ export class Node extends Draggable {
     body.className = 'body';
     // Main content
 
-    NodeFactory.createContent( node.properties,body,this.id );
+    NodeFactory.createContent( node.properties,body,this.id, metadata);
 
     return body;
   }

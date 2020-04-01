@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf8">
-<title>TWIN Chessboard</title>
+<title>ART Rec2D</title>
 <link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet"> 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 <link rel="stylesheet" href="../css/twin.css">
@@ -45,154 +45,220 @@
         {
           id: 0,
           template:1,
-          pos: [0,0],
           metadata: {
-            type: "8-bit",
+            comment: "New random image",
+            pos: [326,157],
+            type: "32-bit",
             width: 256,
             height: 256,
-            fill: 0,
+            fill: "random()",
             nslices: 1
           }
         },
         {
           id: 3,
-          template:71,
-          pos: [0,0],
+          template:2,
           metadata: {
-            comment: "range",
-            start: 0,
-            stop: 8,
-            step: 1
+            comment: 'open raster',
+            pos: [-150,198]
+          }
+        },
+        {
+          id: 4,
+          template:23,
+          metadata: {
+            comment: 'toStack',
+            pos: [31,178],
+            nrows: 180,
+            ncols: 1,
+            border:0
           }
         },
         {
           id: 5,
           template:71,
-          pos: [0,0],
           metadata: {
             comment: "range",
+            pos: [25,345],
             start: 0,
-            stop: 8,
+            stop: 180,
             step: 1
           }
         },
         {
           id: 22,
           template:11,
-          pos: [0,0],
           metadata: {
-            comment: "viewer2D"
+            comment: "viewer2D",
+            pos: [1757,344],
           }
         },
         {
           id: 30,
           template:26,
-          pos: [0,0],
           metadata: {
             comment: "duplicate",
+            pos: [327,327],
             copies: 8
           }
         },
         {
           id: 32,
           template:36,
-          pos: [0,0],
           metadata: {
             comment: "resize",
+            pos: [1272,195],
             mode: "Nearest",
-            rsz_width: 64,
-            rsz_height: 1
+            rsz_width: 256,
+            rsz_height: 256
           }
         },
         {
           id: 34,
           template:84,
-          pos: [0,0],
           metadata: {
-            comment: "zip"
+            comment: "zip",
+            pos: [172,256],
           }
         },
         {
           id: 35,
           template:73,
-          pos: [0,0],
           metadata: {
-            comment: "unfold"
+            comment: "fold:start",
+            pos: [483,244],
+          }
+        },
+        {
+          id: 36,
+          template:81,
+          metadata: {
+            comment: "set",
+            pos: [635,183],
+            code1: "accu = data[2]",
+            code2: "angle = data[1]",
+            code3: "proj = data[0]"
+          }
+        },
+        {
+          id: 38,
+          template:52,
+          metadata: {
+            comment: "inspect",
+            pos: [651,344],
           }
         },
         {
           id: 40,
-          template:81,
-          pos: [0,0],
+          template:35,
           metadata: {
-            code: "x = index % 8"
+            comment: "rotate",
+            pos: [831,269],
           }
         },
         {
           id: 41,
-          template:28,
-          pos: [0,0],
+          template:78,
           metadata: {
-            comment: "roi"
+            comment: "project",
+            pos: [971,269],
+            axis: 'Y'
           }
         },
         {
           id: 42,
           template:74,
-          pos: [0,0],
           metadata: {
-            comment: "fold"
+            comment: "fold:end",
+            pos: [1748,215],
+          }
+        },
+        {
+          id: 45,
+          template:35,
+          metadata: {
+            comment: "rotate",
+            pos: [1414,100],
+          }
+        },
+        {
+          id: 46,
+          template:33,
+          metadata: {
+            comment: "calc: add",
+            pos: [1574,163]
+          }
+        },
+        {
+          id: 48,
+          template:82,
+          metadata: {
+            comment: "set from storage",
+            pos: [1427,290]
+          }
+        },
+        {
+          id: 49,
+          template:83,
+          metadata: {
+            comment: "get from storage",
+            pos: [1427,290]
           }
         },
         {
           id: 50,
-          template:27,
-          pos: [0,0],
+          template:33,
           metadata: {
-            comment: "fill"
+            comment: "calc: subtract",
+            pos: [1116,261]
           }
         }
       ],
       edges : [
         {
           eid: 1,
-          source: 0,out: 0,
-          target: 50, in: 1,
+          source: 36,out: 0,
+          target: 50, in: 0,
         },
         {
           eid: 2,
           source: 3,out: 0,
-          target: 32, in: 0,
+          target: 4, in: 0,
+        },
+        {
+          eid: 3,
+          source: 35,out: 0,
+          target: 38, in: 0,
         },
         {
           eid: 4,
           source: 5,out: 0,
-          target: 30, in: 0,
+          target: 34, in: 1,
         },
         {
           eid: 5,
-          source: 32,out: 0,
+          source: 4,out: 0,
           target: 34, in: 0,
         },
         {
           eid: 6,
-          source: 30,out: 0,
-          target: 34, in: 1,
+          source: 34,out: 0,
+          target: 30, in: 0,
         },
         {
           eid: 7,
-          source: 34,out: 0,
-          target: 35, in: 0,
+          source: 30,out: 0,
+          target: 35, in: 1,
         },
         {
           eid: 8,
           source: 35,out: 0,
-          target: 40, in: 0,
+          target: 36, in: 0,
         },
         {
           eid: 9,
           source: 41,out: 0,
-          target: 50, in: 0,
+          target: 50, in: 1,
         },
         {
           eid: 10,
@@ -201,16 +267,46 @@
         },
         {
           eid: 11,
-          source: 40,out: 0,
-          target: 41, in: 1,
+          source: 0,out: 0,
+          target: 35, in: 0,
         },
         {
           eid: 12,
           source: 50,out: 0,
-          target: 42, in: 0,
+          target: 32, in: 2,
+        },
+        {
+          eid: 13,
+          source: 32,out: 0,
+          target: 45, in: 1,
         },
         {
           eid: 14,
+          source: 45,out: 0,
+          target: 46, in: 0,
+        },
+        {
+          eid: 15,
+          source: 46,out: 0,
+          target: 42, in: 0,
+        },
+        {
+          eid: 16,
+          source: 36,out: 1,
+          target: 40, in: 0,
+        },
+        {
+          eid: 17,
+          source: 36,out: 2,
+          target: 40, in: 1,
+        },
+        {
+          eid: 18,
+          source: 46,out: 0,
+          target: 42, in: 0,
+        },
+        {
+          eid: 19,
           source: 42,out: 0,
           target: 22, in: 0,
         }
