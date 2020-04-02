@@ -145,11 +145,10 @@ export class NodeFactory {
   static button(row,id,value) {
     let container = document.createElement('div');
     container.className = 'flex-cell';
-    let e = document.createElement('button');
+    let e = document.createElement('a');
+    e.className = 'button';
+    e.setAttribute('href','#');
     e.innerHTML = row.button;
-    if (row.output === undefined && row.input === undefined) {
-      e.innerHTML += ':&nbsp;';
-    }
     container.appendChild(e);
     return container;
   }
@@ -160,6 +159,7 @@ export class NodeFactory {
    */
   static canvas(row,id,value) {
     // <div class="graphics"><canvas></canvas></div>
+    // Check if canvas is already created TODO
     let container = document.createElement('div');
     container.className = 'graphics';
     container.appendChild(document.createElement('canvas'));
@@ -193,16 +193,31 @@ export class NodeFactory {
   static file(row,id,value) {
    let container = document.createElement('div');
     container.className = 'flex-cell';
-
-    let input = document.createElement('input');
-    input.className = "check";
-    input.setAttribute("type", "file");
-    input.setAttribute('name',row.name || 'unknown');
-    input.setAttribute('value',value);
-    input.checked = row.checkbox;
-    container.appendChild(input);
-
-    // TODO Add event onchanged
+    // From MDN
+    // https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
+    let inp = document.createElement('input');
+    inp.id = "fileElem";
+    inp.className = "visually-hidden";
+    inp.setAttribute("type", "file");
+    
+    inp.addEventListener("change", (event) => {
+      let files = event.target.files;
+      let root = NodeFactory.getNodeElement(event.target);
+      root.dataset.file = files[0].name;
+      // Preview
+      let c = document.querySelector(`#node_${id} canvas`);
+      let ctx = c.getContext("2d");
+      ctx.beginPath();
+      ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+      ctx.stroke(); 
+    });
+    // <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden">
+    let e = document.createElement('label');
+    e.className = 'button';
+    e.setAttribute('for','fileElem');
+    e.innerHTML = row.file;
+    container.appendChild(inp);
+    container.appendChild(e);
     return container;
   }
 
@@ -440,6 +455,13 @@ export class NodeFactory {
     return container;
   }
 
+  static getNodeElement(child) {
+    let el = child;
+    while (el.tagName !== 'SECTION' && el.tagName !== 'BODY') {
+      el = el.parentNode;
+    }
+    return el;
+  }
 } // End of class NodeFactory
 
 

@@ -373,6 +373,41 @@ svg {
   pointer-events: none;
 }
 
+a.button,label.button {
+  display:inline-block;
+  font-family: 'Lato', sans-serif;
+  font-size:12px;
+  background-color: #fefefe;
+  color: #555;
+  width: 90%;
+  border: solid 1px #ccc;
+  border-radius: 10px;
+  padding-left: 4px;
+  text-decoration: none;
+  text-align:center;
+  transition: all 0.2s;
+}
+a.button:hover,label.button:hover{
+  /*border: 1px solid black;*/
+  background-color: #ccc;
+}
+
+input[type="file"].visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* Separate rule for compatibility, :focus-within is required on modern Firefox and Chrome */
+input[type="file"].visually-hidden:focus + label {
+  outline: thin dotted;
+}
+input[type="file"].visually-hidden:focus-within + label {
+  outline: thin dotted;
+}
+
 input, .select-container {
   font-family: 'Lato', sans-serif;
   font-size:12px;
@@ -501,9 +536,12 @@ input[type="number"] {
   padding: 4px;
 }
 
+/*
 .body input[type="file"], .file-input {
   display: none;
 }
+*/
+
 
 .body .graphics {
 

@@ -24,7 +24,7 @@
 
 'use strict';
 
-
+import {NodeFactory} from './nodeFactory.js';
 import {Draggable,translStart,translOver,translEnd} from './draggable.js';
 import {Graph} from './graph.js';
 import {xmlns} from './common.js';
@@ -70,6 +70,14 @@ export class Board extends Draggable {
     console.log('RUN ',document.querySelector('#board'));
     // document.querySelector('#board').style.transform = `translate(50%,50%) scale(1) translate(-50%,-50%)`;
     this.draggable(document.querySelector('#board'),translStart,translOver,translEnd);
+    document.querySelector('#board').addEventListener('change', (ev) => {
+    console.log('something changed');
+    console.log(ev);
+    console.log(NodeFactory.getNodeElement(ev.target));
+    console.log(JSON.stringify(NodeFactory.getNodeElement(ev.target).dataset.file));
+    
+    });
+    
   }
   
   load(graph) {
