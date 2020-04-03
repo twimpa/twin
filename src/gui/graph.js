@@ -1,8 +1,8 @@
 /*
- *  TWIP: Tiny Web Image Nodes
+ *  TWIN: Tiny Web Image Nodes
  *  Copyright (C) 2019-2020  Jean-Christophe Taveau.
  *
- *  This file is part of TWIP
+ *  This file is part of TWIN
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by

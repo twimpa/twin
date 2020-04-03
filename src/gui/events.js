@@ -38,7 +38,7 @@
     node.classList.toggle('shrink');
 
     // Shrink mode is true
-    TWIP.graph.updateEdges(node,node.classList.contains('shrink'));
+    TWIN.graph.updateEdges(node,node.classList.contains('shrink'));
     console.log(node);
     evt.preventDefault();
 

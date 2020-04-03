@@ -412,6 +412,7 @@ input, .select-container {
   font-family: 'Lato', sans-serif;
   font-size:12px;
   background-color: #fefefe;
+  border: solid 1px #ccc;
 }
 
 input:-moz-read-only {

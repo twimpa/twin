@@ -32,9 +32,10 @@ import {xmlns} from './common.js';
 
 export class Board extends Draggable {
 
-  constructor(element,templates) {
+  constructor(parent,templates) {
     super();
-    this.element = element;
+    this.parent = parent;
+    this.boardgame;
     this._templates = templates;
     this.graph = new Graph();
     this.zoom = 1.0;
@@ -70,16 +71,20 @@ export class Board extends Draggable {
     console.log('RUN ',document.querySelector('#board'));
     // document.querySelector('#board').style.transform = `translate(50%,50%) scale(1) translate(-50%,-50%)`;
     this.draggable(document.querySelector('#board'),translStart,translOver,translEnd);
-    document.querySelector('#board').addEventListener('change', (ev) => {
-    console.log('something changed');
-    console.log(ev);
-    console.log(NodeFactory.getNodeElement(ev.target));
-    console.log(JSON.stringify(NodeFactory.getNodeElement(ev.target).dataset.file));
-    
+    this.boardgame.addEventListener('change', (ev) => {
+      console.log('something changed');
+      console.log(ev);
+      console.log(NodeFactory.getNodeElement(ev.target));
+      console.log(JSON.stringify(NodeFactory.getNodeElement(ev.target).dataset.file));
     });
     
   }
   
+  /**
+   * Load a graph defined as JSON
+   *
+   * @author Jean-Christophe Taveau
+   */
   load(graph) {
     
      // Create Edges
@@ -87,11 +92,11 @@ export class Board extends Draggable {
     svg.setAttribute('width','100%');
     svg.setAttribute('height','100%');
 
-    this.element.prepend(svg);
-    let boardgame = document.createElement('div');
-    boardgame.id = 'board';
-    boardgame.className = 'board';
-    this.element.appendChild(boardgame);
+    this.parent.prepend(svg);
+    this.boardgame = document.createElement('div');
+    this.boardgame.id = 'board';
+    this.boardgame.className = 'board';
+    this.parent.appendChild(boardgame);
     
     this.graph.setTemplates(this._templates);
     this.graph.setRootNode(boardgame);

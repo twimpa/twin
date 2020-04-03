@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet"> 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 <link rel="stylesheet" href="../css/twin.css">
-<script type="text/javascript" src="../javascripts/twin.js"></script>
+<script type="text/javascript" src="../dist/twin.js"></script>
 
 </head>
 <body>
@@ -22,6 +22,9 @@
 
   let main = document.querySelector('main');
 
+  TWIN.init();
+  
+  
   fetch('../templates/nodes.json', {
     method: 'GET',
     headers: new Headers({'Content-Type': 'application/json'}),
@@ -34,51 +37,44 @@
     alert(`Something went wrong - ${error}`)
   })
   .then ( nodeTemplates => {
-    console.log(nodeTemplates);
-    // Create Graph
-    TWIP.nodeTemplates = nodeTemplates;
+  
+    // Create Board + Graph
+    let board = new Board(main, nodeTemplates);
 
-    // Create Edges
-    let svg = document.createElementNS(xmlns,'svg');
-    svg.setAttribute('width','100%');
-    svg.setAttribute('height','100%');
-
-    main.prepend(svg);
-    let boardgame = document.createElement('div');
-    boardgame.id = 'board';
-    boardgame.className = 'board';
-    main.appendChild(boardgame);
-
-    // Load Test Graph
+    // Load Sinogram Graph
     let test = {
       nodes: [
         {
           id: 0,
           template:2,
-          pos: [0,0],
           metadata: {
+            comment: "Open...",
+            pos: [216,259]
           }
         },
         {
           id: 3,
           template:26,
-          pos: [0,0],
           metadata: {
+            comment: "Duplicate",
+            pos: [384,266],
             copies: 180
           }
         },
         {
           id: 5,
           template:74,
-          pos: [0,0],
           metadata: {
+            comment: "Aggregate/Collect",
+            pos: [1179,256],
           }
         },
         {
           id: 6,
           template:71,
-          pos: [0,0],
           metadata: {
+            comment: "Range",
+            pos: [714,154],
             start:0,
             stop:-180,
             step:-1
@@ -87,38 +83,46 @@
         {
           id: 14,
           template:22,
-          pos: [0,0],
           metadata: {
-            op:4
+            comment: "Montage",
+            pos: [1336,236],
+            nrows: 256,
+            ncols: 1,
+            border:0,
+            scale:1
           }
         },
         {
           id: 17,
           template:73,
-          pos: [0,0],
           metadata: {
+            comment: "Fold",
+            pos: [556,262],
           }
         },
         {
           id: 20,
           template:35,
-          pos: [0,0],
           metadata: {
-            op: 2
+            comment: "Rotate",
+            pos: [870,255],
+            angle: "auto"
           }
         },
         {
           id: 21,
-          template:75,
-          pos: [0,0],
+          template:78,
           metadata: {
+            comment: "Project",
+            pos: [1027,258],
           }
         },
         {
           id: 22,
           template:11,
-          pos: [0,0],
           metadata: {
+            comment: "Viewer2D",
+            pos: [1488,261],
           }
         }
       ],
@@ -131,7 +135,7 @@
         {
           eid: 2,
           source: 3,out: 0,
-          target: 17, in: 0,
+          target: 17, in: 1,
         },
         {
           eid: 3,
@@ -166,13 +170,9 @@
       ]
     };
 
-    TWIP.graph.setTemplates(nodeTemplates);
-    TWIP.graph.setRootNode(boardgame);
-    TWIP.graph.setGraphicsContext(svg);
-    TWIP.graph.build(test);
-    TWIP.graph.show();
-
-    TWIP.init();
+    board.load(test);
+    board.run();
+    
   }); 
 
 </script>
