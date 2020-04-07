@@ -26,7 +26,7 @@
 
 import {Node} from './node.js';
 import {Edge} from './edge.js';
-
+import {FuncFactory} from '../core/funcFactory.js';
 
 export class Graph {
 
@@ -38,6 +38,7 @@ export class Graph {
     this.templates;
     this.nodes = [];
     this.edges = [];
+    this.pipeline = [];
     this.context; // svg or canvas/webgl?
     this.root; // HTML Parent node for all the nodes
   }
@@ -53,9 +54,14 @@ export class Graph {
 
   appendNode(templateID,nodeID = -1,metadata={}) {
     let newid = (nodeID !== -1) ? nodeID : this.lastID() + 1; // TODO HACK
-    let node =  new Node(newid,this.templates.find( n => n.id === templateID),metadata);
+    // Create the Node GUI (the `Producer`)
+    let template = this.templates.find( n => n.id === templateID);
+    let node =  new Node(newid,template,metadata);
     this.nodes.push(node);
     this.root.appendChild(node.element);
+    // Add the engine in the queue waiting for execution (the `Consumer`).
+    let func = FuncFactory.func(template.name);
+    this.pipeline.push(func);
     return node;
   }
 
@@ -91,12 +97,16 @@ export class Graph {
     let root = this.root;
     // Create Graph
     nodes.forEach( (node) => {
+
+      this.appendNode(node.template,node.id,node.metadata);
+      /*
       // Attach node to <root>
       console.log(node.template,node.id,node.metadata);
       console.log(this.templates.find( n => n.id === node.template));
       let n = new Node(node.id,this.templates.find( n => n.id === node.template),node.metadata);
       this.nodes.push(n);
       root.appendChild(n.element);
+      */
     });
   }
 

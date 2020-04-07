@@ -29,7 +29,7 @@
  *
  * @author Jean-Christophe Taveau
  */
-const range = (start,end,step=1) => async (args) => {
+export const nrange = (start,end,step=1) => async (args) => {
   args.array = Array.from({length: Math.abs(Math.floor((end - start) / step))}, (_,i) => start + i * step);
   return args;
 };

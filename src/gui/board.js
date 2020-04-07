@@ -32,6 +32,9 @@ import {xmlns} from './common.js';
 
 export class Board extends Draggable {
 
+  /**
+   * @constructor
+   */
   constructor(parent,templates) {
     super();
     this.parent = parent;
@@ -96,10 +99,10 @@ export class Board extends Draggable {
     this.boardgame = document.createElement('div');
     this.boardgame.id = 'board';
     this.boardgame.className = 'board';
-    this.parent.appendChild(boardgame);
+    this.parent.appendChild(this.boardgame);
     
     this.graph.setTemplates(this._templates);
-    this.graph.setRootNode(boardgame);
+    this.graph.setRootNode(this.boardgame);
     this.graph.setGraphicsContext(svg);
     
     // Create Nodes
@@ -111,6 +114,9 @@ export class Board extends Draggable {
   }
   
   run() {
-
+    // TODO
+    console.log(this.graph);
   }
-} // End of class TWIN
+  
+} // End of class Board
+

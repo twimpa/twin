@@ -28,7 +28,7 @@
  * Load an image (jpg, png, gif)
  *
  */
-const load = async (args) => {
+export const load = async (args) => {
 
   const preloadRaster = (path) => {
     return fetch(path)

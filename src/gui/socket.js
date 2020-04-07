@@ -32,7 +32,7 @@ export class Socket extends Draggable {
     super();
     let _button = document.createElement('button');
     _button.id = (type === 'input') ? `insock_${id}[0]` : `outsock_${id}[0]`;
-    _button.innerHTML = '<i class="fas fa-chevron-circle-right"></i>';
+    _button.innerHTML = '<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>';
     this.draggable(_button,edgeStart,edgeDrag,edgeEnd);
     this.socket = _button;
   }

@@ -1,0 +1,62 @@
+
+// grep TWIN templates/nodes.json
+
+const KEYWORDS = [
+  "TWIN_ADV_MM",
+  "TWIN_AGGREGATE",
+  "TWIN_BASIC_MM",
+  "TWIN_DEBUG",
+  "TWIN_DUPLICATE",
+  "TWIN_ENDSELECT",
+  "TWIN_FILL",
+  "TWIN_FOLD",
+  "TWIN_GET_STORAGE",
+  "TWIN_GETTER",
+  "TWIN_IFTHENELSE",
+  "TWIN_IJ_SAMPLES",
+  "TWIN_IMAGE_CALC",
+  "TWIN_IMAGE_MATH",
+  "TWIN_INFO",
+  "TWIN_INSPECT",
+  "TWIN_MATH_MACRO",
+  "TWIN_MATHS",
+  "TWIN_MATHS_ADV",
+  "TWIN_MERGE_COLORS",
+  "TWIN_MONTAGE",
+  "TWIN_NEW",
+  "TWIN_OPEN_RASTER",
+  "TWIN_PROJECT",
+  "TWIN_RANGE",
+  "TWIN_RESIZE",
+  "TWIN_ROI",
+  "TWIN_ROTATE",
+  "TWIN_SAVE_TIFF",
+  "TWIN_SELECT_FUNC",
+  "TWIN_SET_STORAGE",
+  "TWIN_SETTER",
+  "TWIN_SPLIT_COLORS",
+  "TWIN_STATS",
+  "TWIN_TAB_DATA",
+  "TWIN_TEST_IMAGE",
+  "TWIN_THRESHOLD",
+  "TWIN_TO_STACK",
+  "TWIN_TRANSFORM",
+  "TWIN_TYPE",
+  "TWIN_VIDEO",
+  "TWIN_VIEW_2D",
+  "TWIN_VIEW_3D",
+  "TWIN_VIEW_PLOT",
+  "TWIN_VIEW_PLOT",
+  "TWIN_VIEW_STACK",
+  "TWIN_ZIP"
+];
+
+const toObj = (array) => array.reduce( (accu,v,i) => {
+  accu[v] = i + 1;
+  return accu;
+}, {});
+
+const obj = toObj(KEYWORDS);
+
+console.log(obj);
+

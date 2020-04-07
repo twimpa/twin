@@ -30,6 +30,9 @@ import {NodeFactory} from './nodeFactory.js';
 
 export class Node extends Draggable {
 
+  /**
+   * @constructor
+   */
   constructor(id,template,metadata) {
     super();
     this.id = id;
@@ -43,14 +46,14 @@ export class Node extends Draggable {
     this.createNode(template,id,metadata);
   }
 
-  /**
-   *
+  /*
+   * Private
+   * Create Node
    * @author Jean-Christophe Taveau
    */
   createNode(node,id,metadata) {
 
     // Main
-    console.log('CREATE ' + node.description);
     let nodeH = this.element;
     nodeH.id = 'node_'+id;
     nodeH.style.left = (metadata.pos) ? `${metadata.pos[0]}px`: `${Math.floor(Math.random() * 1000)}px`;
@@ -82,21 +85,68 @@ export class Node extends Draggable {
    * @author Jean-Christophe Taveau
    */
   createHeader(node,id,metadata) {
+  
+    const shrinkExpand = (event) => {
+      // TODO
+    }
+    
+    const button = (icon,title) => {
+      let b = document.createElement('a');
+      let i = document.createElement('i');
+      i.className = `fa ${icon}`;
+      i.ariaHidden = true;
+      b.appendChild(i);
+      b.href = '#';
+      b.title = title;
+      return b;
+    }
+    
+    
     let nodeH = this.element;
 
     // Header
     let head = document.createElement('div'); head.className = 'header'; head.classList.add(node.class.replace('.','_').toLowerCase());
-    let preview = node.preview ? '<a href="#"><span class="preview"><i class="far fa-eye"></i></span></a>' : '';
-    let desc =  node.description;
-    head.innerHTML = `
+    let banner = document.createElement('p');
+    banner.title = (node.help) ? node.help : "No Help";
+    banner.dataset.nodeid = id;
+    head.appendChild(banner);
+    
+    // Part I - Shrink/Expand Button
+    let shrink = document.createElement('a');
+    shrink.id = `expand_${id}`;
+    shrink.href = '#';
+    shrink.innerHTML = `<span class="expandB">&#9662;</span><span class="shrinkB">&#9656;</span>`;
+    shrink.addEventListener('click', shrinkExpand);
+    banner.appendChild(shrink);
+    // Part II - Description
+    banner.appendChild(document.createTextNode(node.description) );
+    // Part III - Icons and Description
+    let preview = node.preview ? button('fa-eye','Preview') : undefined;  //'<a title="Preview" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>' : '';
+    let info = button('fa-info',"Information");
+    let close = button('fa-ellipsis-v','Close');
+    // let desc =  node.description;
+    let toolset = document.createElement('span');
+    toolset.className = 'toolset';
+    banner.appendChild(toolset);
+    if (preview) {
+      toolset.appendChild(preview); 
+    }
+    // toolset.appendChild(info);
+    toolset.appendChild(close);
+    
+    // = `&nbsp;&nbsp;${desc} &nbsp;<span class="preview">${preview} ${info} ${close}</span>`;
+        
+    /*
+      head.innerHTML = `
       <p title="${node.help ? node.help : "No Help"}" data-nodeid="${id}">
-        <a href="#" id="expand_${id}" onclick="shrinkExpand(event)">
+        <a href="#" id= onclick="shrinkExpand(event)">
           <span class="expandB">&#9662;</span>
           <span class="shrinkB">&#9656;</span>
         </a>
-        &nbsp;&nbsp;${desc} &nbsp;${preview}
+        
       </p>`;
-
+    */
+    
     this.draggable( head,dragStartNode,dragOverNode, dragEndNode);
     return head;
   }

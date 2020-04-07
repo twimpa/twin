@@ -136,18 +136,15 @@ svg {
 
 
 .header {
-  padding: 1px 6px;
+  padding: 1px 3px;
   color: white;
   border-radius: 4px 4px 0px 0px;
-}
-
-.header .preview {
-  float: right;
 }
 
 .header a {
   text-decoration: none;
   color: black;
+  margin-right: 3px;
 }
 
 .header p,label {
@@ -157,16 +154,43 @@ svg {
        -o-user-select: none;
           user-select: none;
 }
-/* Color scheme from ColorBrewer
- *['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6']
+/* Color scheme from ColorBrewer: 9-class qualitative
+ * ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6']
+ * ['#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9']
+*/
+
+
+.header .toolset {
+  float: right;
+}
+
+.header .toolset a {
+  display: inline-block;
+  /*
+  font-size: inherit;
+  border: solid 1px black;
+  border-radius: 50%;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
+  text-align: center;
+  */
+}
+
+/*
+.header .toolset a:last-child {
+  margin: 0;
+}
 */
 
 .loader {
   background-color: #e64555;
+  background-color: #1f78b4;
 }
 
 .saver {
   background-color: #b33641;
+  background-color: #a6cee3;
 }
 
 .viewer {
@@ -175,6 +199,7 @@ svg {
 
 .tool {
   background-color: #66c4ff;
+  background-color: #fb9a99;
 }
 
 .information {
@@ -183,6 +208,7 @@ svg {
 
 .math {
   background-color: #e68745;
+  background-color: #ff7f00;
 }
 
 .morphology {
@@ -196,6 +222,7 @@ svg {
 
 .programming {
   background-color: #426628;
+  background-color: #33a02c;
 }
 
 .switch {
@@ -461,17 +488,21 @@ input[type="number"] {
 
 
 .input button  {
-  display: block;
+  display: inline-block;
   float: left;
   outline: none;
   cursor: pointer;
   font-size: 1em;
+  text-align: center;
   transition: 0.3s;
   position: absolute;
   border: solid 1px black;
   border-radius: 50%;
-  padding: 0px 1px;
+  padding: 0;
   left: -6px;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
 }
 
 .input button:hover { 
@@ -519,8 +550,11 @@ input[type="number"] {
   position: absolute;
   border: solid 1px black;
   border-radius: 1em;
-  padding: 0px 1px;
+  padding: 0;
   right: -6px;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
 }
 
 .output label {
