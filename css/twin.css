@@ -60,79 +60,6 @@ svg {
   height: 100%;
 }
 
-.shrinkdiv {
-  display: none;
-}
-
-.shrinkdiv .in_socket  {
-  display: block;
-  outline: none;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 0px;
-  transition: 0.3s;
-  position: absolute;
-  border: solid 1px black;
-  border-radius: 1em;
-  padding: 0px 1px;
-  top: 6px;
-  left: -6px;
-}
-
-.shrinkdiv .out_socket  {
-  display: block;
-  outline: none;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 0px;
-  transition: 0.3s;
-  position: absolute;
-  border: solid 1px black;
-  border-radius: 1em;
-  padding: 0px 1px;
-  top: 6px;
-  right: -6px;
-}
-
-.shrinkB {
-  display: none;
-}
-
-.shrink {
-  border-radius: 4px;
-  margin: 0px 8px;
-}
-
-.shrink p {
-  margin: 0px 10px;
-}
-
-.shrink .header {
-  width: 100%;
-}
-
-.shrink .preview {
-  display: none;
-}
-
-.shrink .expandB {
-  display: none;
-}
-
-.shrink .shrinkB {
-  display: inline-block;
-}
-
-.shrink > .shrinkdiv{
-  display: block;
-}
-
-.shrink > .body {
-  display: none;
-}
-.shrink > .footer {
-  display: none;
-}
 
 
 .header {
@@ -182,6 +109,93 @@ svg {
   margin: 0;
 }
 */
+
+.shrinkdiv {
+  display: none;
+  border-radius: 4px;
+}
+
+.shrinkdiv .in_socket  {
+  display: inline-block;
+  float: left;
+  outline: none;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: center;
+  transition: 0.3s;
+  position: absolute;
+  border: solid 1px black;
+  border-radius: 50%;
+  padding: 0;
+  top: 16px;
+  left: -6px;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.shrinkdiv .out_socket  {
+  display: inline-block;
+  float: left;
+  outline: none;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: center;
+  transition: 0.3s;
+  position: absolute;
+  border: solid 1px black;
+  border-radius: 50%;
+  padding: 0;
+  top: 16px;
+  right: -6px;
+  line-height: 1em;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.shrinkB {
+  display: none;
+}
+
+.shrink {
+  width: auto;
+  border-radius: 4px;
+  margin: 0px 8px;
+}
+
+.shrink .header {
+  width: 100%;
+}
+
+.shrink .header .toolset {
+  margin-left: 20px;
+}
+
+
+.shrink .preview {
+  display: none;
+}
+
+.shrink .expandB {
+  display: none;
+}
+
+.shrink .shrinkB {
+  display: inline-block;
+}
+
+.shrink > .shrinkdiv{
+  display: block;
+}
+
+.shrink > .body {
+  display: none;
+}
+.shrink > .footer {
+  display: none;
+}
+
+
 
 .loader {
   background-color: #e64555;

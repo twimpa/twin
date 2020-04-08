@@ -86,8 +86,42 @@ export class Node extends Draggable {
    */
   createHeader(node,id,metadata) {
   
-    const shrinkExpand = (event) => {
-      // TODO
+    const shrinkExpand = (evt) => {
+      console.log('SHRINK/EXPAND');
+
+      // Hide body, footer
+      let id = evt.target.parentNode.id.match(/\d+/)[0];
+      let node = document.getElementById(`node_${id}`);
+      console.log(evt.target.parentNode.id,id);
+      console.log(node);
+      node.classList.toggle('shrink');
+
+      // Shrink mode is true
+      TWIN.graph.updateEdges(node,node.classList.contains('shrink'));
+      console.log(node);
+      evt.preventDefault();
+    }
+    
+    const openTools = (preview) => (event) => {
+      console.log(event);
+      console.log(NodeFactory.getNodeElement(event.target));
+      
+      let menu = document.querySelector('#hamburger');
+      if (menu === null) {
+        menu = document.createElement('div');
+        menu.id = 'hamburger';
+        document.body.appendChild(menu);
+        menu.display = 'none';
+      }
+      menu.innerHTML = `<ul>
+        <li>Help<span class="shortcut">H</span></li>
+        <li>Inspect<span class="shortcut">I</span></li>
+        ${preview ? '<li>Preview<span class="shortcut">V</span></li>' : ''} 
+        <li>Close<span class="shortcut">X</span></li>
+      </ul>`;
+      menu.display = 'inline-block';
+      menu.style.top = NodeFactory.getNodeElement(event.target).style.top; //`${event.clientX}px`;
+      menu.style.right = NodeFactory.getNodeElement(event.target).style.left; // `${event.clientY}px`;
     }
     
     const button = (icon,title) => {
@@ -123,16 +157,19 @@ export class Node extends Draggable {
     // Part III - Icons and Description
     let preview = node.preview ? button('fa-eye','Preview') : undefined;  //'<a title="Preview" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>' : '';
     let info = button('fa-info',"Information");
-    let close = button('fa-ellipsis-v','Close');
+    let menu = button('fa-bars','Tools'); // fa-ellipsis-v
+    menu.addEventListener( 'click', openTools(node.preview));
     // let desc =  node.description;
     let toolset = document.createElement('span');
     toolset.className = 'toolset';
     banner.appendChild(toolset);
+    /*
     if (preview) {
       toolset.appendChild(preview); 
     }
+    */
     // toolset.appendChild(info);
-    toolset.appendChild(close);
+    toolset.appendChild(menu);
     
     // = `&nbsp;&nbsp;${desc} &nbsp;<span class="preview">${preview} ${info} ${close}</span>`;
         
@@ -160,9 +197,9 @@ export class Node extends Draggable {
 
     let shrink = document.createElement('div');
     shrink.className = 'shrinkdiv'; shrink.classList.add(node.class.replace('.','_').toLowerCase());
-    shrink.innerHTML = (this.hasInputs) ? '<span class="in_socket"><i class="fas fa-chevron-circle-right"></i></span>': '';
+    shrink.innerHTML = (this.hasInputs) ? '<span class="in_socket"><i class="fa fa-chevron-circle-right"></i></span>': '';
     shrink.innerHTML += '<p>&nbsp;</p>';
-    shrink.innerHTML += (this.hasOutputs) ? '<span class="out_socket"><i class="fas fa-chevron-circle-right"></i></span>' : '';
+    shrink.innerHTML += (this.hasOutputs) ? '<span class="out_socket"><i class="fa fa-chevron-circle-right"></i></span>' : '';
     return shrink;
   }
 

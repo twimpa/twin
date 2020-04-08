@@ -29,7 +29,9 @@
  *
  * @author Jean-Christophe Taveau
  */
-export const nrange = (start,end,step=1) => async (args) => {
-  args.array = Array.from({length: Math.abs(Math.floor((end - start) / step))}, (_,i) => start + i * step);
+export const nrange = (nodeID,start,end,step=1) => async (args) => {
+  // Get `start@<nodeID>`, `end@<nodeID>`, and `step@<nodeID>` from heap
+  // Set results in the heap
+  args[`array@{nodeID}`] = Array.from({length: Math.abs(Math.floor((end - start) / step))}, (_,i) => start + i * step);
   return args;
 };
