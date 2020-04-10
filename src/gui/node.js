@@ -104,24 +104,23 @@ export class Node extends Draggable {
     
     const openTools = (preview) => (event) => {
       console.log(event);
-      console.log(NodeFactory.getNodeElement(event.target));
-      
+      let nodeElement = NodeFactory.getNodeElement(event.target);
       let menu = document.querySelector('#hamburger');
       if (menu === null) {
         menu = document.createElement('div');
         menu.id = 'hamburger';
-        document.body.appendChild(menu);
+        document.querySelector('#board').appendChild(menu);
         menu.display = 'none';
       }
       menu.innerHTML = `<ul>
-        <li>Help<span class="shortcut">H</span></li>
-        <li>Inspect<span class="shortcut">I</span></li>
-        ${preview ? '<li>Preview<span class="shortcut">V</span></li>' : ''} 
-        <li>Close<span class="shortcut">X</span></li>
+        ${preview ? '<li><a href="#"title="Preview - Shortcut: V"><i class="fa fa-eye" aria-hidden="true"></i></a></li>' : ''} 
+        <li><a href="#"title="Inspect - Shortcut: I"><i class="fa fa-binoculars" aria-hidden="true"></i></a></li>
+        <li><a href="#" title="Help - Shortcut: H"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a></li>
+        <li><a href="#" title = "Close - Shortcut: X"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></li>
       </ul>`;
-      menu.display = 'inline-block';
-      menu.style.top = NodeFactory.getNodeElement(event.target).style.top; //`${event.clientX}px`;
-      menu.style.right = NodeFactory.getNodeElement(event.target).style.left; // `${event.clientY}px`;
+      
+      menu.style.left = `${nodeElement.offsetLeft + nodeElement.offsetWidth}px`; //`${event.clientX}px`;
+      menu.style.top = `${nodeElement.offsetTop}px`; // `${event.clientY}px`;
     }
     
     const button = (icon,title) => {
@@ -261,7 +260,7 @@ export class Node extends Draggable {
     foot.appendChild(link);
     link.dataset.nodeid = id;
     link.innerHTML = `
-      <svg preserveAspectRatio="xMinYMin" viewBox="0 0 20 20">
+      <svg preserveAspectRatio="xMinYMin" viewBox="0 0 22 22">
         <circle cx="18" cy="6" r="2" stroke="none" fill="#777"/>
         <circle cx="12" cy="12" r="2" stroke="none" fill="#777"/>
         <circle cx="18" cy="12" r="2" stroke="none" fill="#777"/>

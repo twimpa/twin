@@ -1,3 +1,4 @@
+
 * {
   box-sizing: border-box;
 }
@@ -29,6 +30,70 @@ main {
   left: 0;
 }
 
+/* Hamburger Menu */
+
+#hamburger {
+  display: block;
+  position: absolute;
+  background-color: #fffb;
+  border-radius: 4px;
+  color: #222;
+  font-size: 18px;
+  box-shadow: 0px 0px 3px 3px #444;
+  z-index: 999;
+}
+
+
+#hamburger::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: -5px;
+  width: 0; 
+  height: 0; 
+  border-right: 5px solid #fffd ;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent; 
+}
+
+
+#hamburger ul {
+  padding: 0;
+  list-style: none;
+  margin: 1px;
+  font-color: #333;
+}
+
+#hamburger li {
+  padding: 0px 0px;
+  float: left;
+  margin-right: 10px;
+}
+
+#hamburger li:first-child {
+  margin-left: 10px;
+}
+
+#hamburger li a {
+  display: block;
+  text-decoration: none;
+  color: #444;
+}
+
+#hamburger li a:hover {
+  color: black;
+}
+
+
+#hamburger .shortcut {
+  float: right;
+  margin-left: 15px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Node */
+
 section {
   position:absolute;
   width: min-content;
@@ -59,8 +124,6 @@ svg {
   width: 100%;
   height: 100%;
 }
-
-
 
 .header {
   padding: 1px 3px;
