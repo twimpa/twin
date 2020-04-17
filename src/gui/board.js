@@ -71,6 +71,7 @@ export class Board extends Draggable {
       this.graph.updateAllEdges(document.querySelectorAll('section'));
       event.preventDefault();
     });
+    
     console.log('RUN ',document.querySelector('#board'));
     // document.querySelector('#board').style.transform = `translate(50%,50%) scale(1) translate(-50%,-50%)`;
     this.draggable(document.querySelector('#board'),translStart,translOver,translEnd);
@@ -101,6 +102,16 @@ export class Board extends Draggable {
     this.boardgame.className = 'board';
     this.parent.appendChild(this.boardgame);
     
+    // Define popup for dialog windows, menus, splash screen, etc.
+    let popup = document.createElement('div');
+    popup.id = 'popup';
+    popup.addEventListener('mousedown', (e) => e.stopPropagation(),false); 
+    popup.addEventListener('dragstart', (e) =>  false,false); 
+    popup.addEventListener('dragover', (e) => false,false); 
+    popup.addEventListener('drop', (e) => false,false);
+    this.boardgame.appendChild(popup);
+    
+    // Graph
     this.graph.setTemplates(this._templates);
     this.graph.setRootNode(this.boardgame);
     this.graph.setGraphicsContext(svg);

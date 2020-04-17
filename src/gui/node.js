@@ -102,37 +102,93 @@ export class Node extends Draggable {
       evt.preventDefault();
     }
     
-    const openTools = (preview) => (event) => {
-      console.log(event);
-      let nodeElement = NodeFactory.getNodeElement(event.target);
-      let menu = document.querySelector('#hamburger');
-      if (menu === null) {
-        menu = document.createElement('div');
-        menu.id = 'hamburger';
-        document.querySelector('#board').appendChild(menu);
-        menu.display = 'none';
-      }
-      menu.innerHTML = `<ul>
-        ${preview ? '<li><a href="#"title="Preview - Shortcut: V"><i class="fa fa-eye" aria-hidden="true"></i></a></li>' : ''} 
-        <li><a href="#"title="Inspect - Shortcut: I"><i class="fa fa-binoculars" aria-hidden="true"></i></a></li>
-        <li><a href="#" title="Help - Shortcut: H"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a></li>
-        <li><a href="#" title = "Close - Shortcut: X"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a></li>
-      </ul>`;
-      
-      menu.style.left = `${nodeElement.offsetLeft + nodeElement.offsetWidth}px`; //`${event.clientX}px`;
-      menu.style.top = `${nodeElement.offsetTop}px`; // `${event.clientY}px`;
-    }
-    
-    const button = (icon,title) => {
+    const button = (icon,title,callback,metadata) => {
       let b = document.createElement('a');
+      b.id = `${icon}`;
       let i = document.createElement('i');
-      i.className = `fa ${icon}`;
+      i.className = `fa fa-${icon}`;
       i.ariaHidden = true;
       b.appendChild(i);
       b.href = '#';
       b.title = title;
+      if (metadata && metadata.display) {
+        b.style.display = metadata.display;
+      }
+      b.addEventListener('click',callback);
       return b;
     }
+    
+    const item = (icon,title,callback,metadata) => {
+      let item = document.createElement('li');
+      let b = button(icon,title,callback,metadata);
+      item.appendChild(b);
+      return item;
+    }
+    
+    const openTools = (preview) => (event) => {
+
+      // Preview Action
+      const preview_action = (evt) => {
+        let eye = document.querySelector('.hamburger #eye');
+        let eye_shut = document.querySelector('.hamburger #eye-slash');
+        if (eye.style.display === 'none') {
+          eye.style.display = 'block';
+          eye_shut.style.display = 'none';
+        }
+        else {
+          eye.style.display = 'none';
+          eye_shut.style.display = 'block';
+        }
+      }
+      
+      // Inspect Action
+      const inspect_action = (evt) => {
+        let popup = document.getElementById('popup');
+        popup.className = 'modal';
+        popup.style.top = '0px';
+        popup.style.left = '0px';
+        popup.innerHTML = '<div class="modal-content"><span class="close">&times;</span><h1>Inspect</h1></div>';
+      }
+      // Help Action
+      const help_action = (evt) => {
+        let popup = document.getElementById('popup');
+        popup.className = 'modal';
+        popup.style.top = '0px';
+        popup.style.left = '0px';
+        popup.innerHTML = '<div class="modal-content"><span class="close">&times;</span><h1>Help</h1></div>';
+      }
+      // Close Action
+      const close_action = (evt) => {
+        console.info('Delete Node and Remove connected edges');
+      }
+      
+
+      let nodeElement = NodeFactory.getNodeElement(event.target);
+      let menu = document.querySelector('#popup');
+      menu.className = 'hamburger';
+      menu.innerHTML = ''; // Reset
+      // Menu Events are already defined in `board.js`
+      // Define buttons in menu
+      let preview_buttons = [
+        {icon: 'eye',title:'Preview - Shortcut: V',fun: preview_action},
+        {icon: 'eye-slash',title:'Preview - Shortcut: V',fun: preview_action,display: 'none'}
+      ];
+      let buttons = [
+        {icon: 'binoculars',title:'Inspect - Shortcut: I',fun: inspect_action},
+        {icon: 'question-circle-o',title:'Help - Shortcut: H',fun: help_action},
+        {icon: 'times-circle-o',title:'Close - Shortcut: X',fun: close_action}
+      ];
+      let items = ( preview ? [...preview_buttons,...buttons] : buttons).map( b => item(b.icon,b.title,b.fun,b));
+      let ulist = document.createElement('ul');
+      ulist.append(...items);
+      menu.appendChild(ulist);
+      menu.style.left = `${nodeElement.offsetLeft + nodeElement.offsetWidth}px`; //`${event.clientX}px`;
+      menu.style.top = `${nodeElement.offsetTop}px`; // `${event.clientY}px`;
+      menu.style.display = 'block';
+
+    }
+    
+
     
     
     let nodeH = this.element;
@@ -153,11 +209,15 @@ export class Node extends Draggable {
     banner.appendChild(shrink);
     // Part II - Description
     banner.appendChild(document.createTextNode(node.description) );
-    // Part III - Icons and Description
+    // Part III - Hamburger Menu
+    /*
     let preview = node.preview ? button('fa-eye','Preview') : undefined;  //'<a title="Preview" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>' : '';
     let info = button('fa-info',"Information");
-    let menu = button('fa-bars','Tools'); // fa-ellipsis-v
-    menu.addEventListener( 'click', openTools(node.preview));
+    */
+    
+    let menu = button('bars','Tools',openTools(node.preview)); // fa-ellipsis-v
+
+
     // let desc =  node.description;
     let toolset = document.createElement('span');
     toolset.className = 'toolset';

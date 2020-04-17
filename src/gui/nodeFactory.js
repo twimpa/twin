@@ -38,17 +38,10 @@ export class NodeFactory {
   }
 
   /**
-   * 
+   * Create Content in Node's body
+   *
    * @author Jean-Christophe Taveau
    */
-  static createBody(rows,nodeid) {
-    let element = document.createElement('div');
-    element.id = `body_${id}`;
-    element.className = `body`;
-    rows.forEach( row => element.appendChild(NodeFactory.createRow(row),nodeid) );
-    return element;
-  }
-
   static createContent(rows,parent,id, metadata) {
     let nodeid = id;
     let outputs = 0;
@@ -64,6 +57,7 @@ export class NodeFactory {
       }
       else {
         let container = NodeFactory.createRow(row,nodeid,metadata[row.name]);
+
         if (row.output !== undefined) {
           container.id = `o_${outputs++}`;
           container.classList.add('output');
@@ -72,6 +66,7 @@ export class NodeFactory {
           container.id = `i_${inputs++}`;
           container.classList.add('input');
         }
+
         parent.appendChild(container);
       }
     });
@@ -103,13 +98,14 @@ export class NodeFactory {
   static createRow(row,node_id, metadata) {
     // Extract widget type
     let cells = Object.keys(row).filter( prop => ['name','source','zip'].indexOf(prop) === -1);
-    let numcolumns = cells.filter( type => ['input','output','source','name','zip'].indexOf(type) === -1).length;
+    let numcolumns = cells.filter( type => ['collapsible','input','output','source','name','zip'].indexOf(type) === -1).length;
     let container = document.createElement('div');
     container.className = `row-${numcolumns}`;
 
     cells.forEach( type => {
-      console.log(type);
+      console.log(type,row);
       let widget = NodeFactory.createWidget(type,row,node_id,metadata);
+      console.log(widget);
       container.appendChild(widget);
     });
 
@@ -123,6 +119,7 @@ export class NodeFactory {
       case 'button': element = NodeFactory.button(row,id,value); break;
       case 'canvas': element = NodeFactory.canvas(row,id,value); break;
       case 'checkbox': element = NodeFactory.checkbox(row,id,value); break;
+      case 'collapsible': element = NodeFactory.collapsible(row,id,value); break;
       case 'file': element = NodeFactory.file(row,id,value); break;
       case 'flowcontrols': element = NodeFactory.flowcontrols(row,id,value); break;
       case 'input': element = NodeFactory.input_socket(row,id,value); break;
@@ -143,16 +140,25 @@ export class NodeFactory {
    * @author Jean-Christophe Taveau
    */
   static button(row,id,value) {
+    // Create Label
     let container = document.createElement('div');
     container.className = 'flex-cell';
-    let e = document.createElement('a');
-    e.className = 'button';
-    e.setAttribute('href','#');
-    e.innerHTML = row.button;
+    let e = NodeFactory._button(row,id,value);
     container.appendChild(e);
     return container;
   }
 
+  static _button(row,id,value) {
+    let e = document.createElement('a');
+    e.id = `${row.name || 'unknown'}__AT__${id}`;
+    e.className = 'button';
+    e.setAttribute('href','#');
+    e.innerHTML = row.button;
+    return e;
+  }
+  
+  
+  
   /**
    * 
    * @author Jean-Christophe Taveau
@@ -175,6 +181,7 @@ export class NodeFactory {
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
+    input.id = `${row.name || 'unknown'}__AT__${id}`;
     input.className = "check";
     input.setAttribute("type", "checkbox");
     input.setAttribute('name',row.name || 'unknown');
@@ -190,13 +197,55 @@ export class NodeFactory {
    * 
    * @author Jean-Christophe Taveau
    */
+  static collapsible(row,id,value) {
+    let container = document.createElement('div');
+    container.className = 'flex-cell';
+
+    let input = document.createElement('input');
+    input.id = `collapsible_${id}`;
+    input.className = "toggle";
+    input.setAttribute("type", "checkbox");
+    input.setAttribute('name',row.name || 'unknown');
+    input.checked = false;
+    container.appendChild(input);
+    
+    // Create Label
+    let label = document.createElement('label');
+    label.className = 'lbl-toggle';
+    label.setAttribute('for',`collapsible_${id}`);
+    label.innerHTML = row.collapsible.label;
+    container.appendChild(label);
+
+    let content = document.createElement('div');
+    content.className = 'collapsible-content';
+    container.appendChild(content);
+    row.collapsible.section.forEach( section_row => {
+      let widgets_row = NodeFactory.createRow(section_row,id,value);
+      content.appendChild(widgets_row);
+    });
+
+    return container;
+  /*
+
+  <label for="collapsible" class="lbl-toggle">Advanced</label>
+  <input class="collapsible toggle" type="checkbox">
+  <div class="collapsible-content">
+
+  </div>
+  */
+  } 
+  /**
+   * 
+   * @author Jean-Christophe Taveau
+   */
   static file(row,id,value) {
+    // Create File Widget
    let container = document.createElement('div');
     container.className = 'flex-cell';
     // From MDN
     // https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
     let inp = document.createElement('input');
-    inp.id = "fileElem";
+    inp.id = `${row.name || 'unknown'}__AT__${id}`;
     inp.className = "visually-hidden";
     inp.setAttribute("type", "file");
     
@@ -214,7 +263,7 @@ export class NodeFactory {
     // <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden">
     let e = document.createElement('label');
     e.className = 'button';
-    e.setAttribute('for','fileElem');
+    e.setAttribute('for',inp.id);
     e.innerHTML = row.file;
     container.appendChild(inp);
     container.appendChild(e);
@@ -226,43 +275,19 @@ export class NodeFactory {
    * @author Jean-Christophe Taveau
    */
   static flowcontrols(row,id,value) {
-    let buttons = row.flowcontrols.toString(2);
-    console.log(buttons);
+    let buttons = row.flowcontrols;
     let container = document.createElement('div');
     container.className = 'flex-cell';
     let controls = document.createElement('div');
     controls.className = 'flowcontrols';
     container.appendChild(controls);
     [...buttons].forEach ( (b,index) => {
-      if (b === "1") {
-        let button = document.createElement('button');
-        switch (index) {
-          case 0: 
-            // Fast Backward (Go to start)
-            button.className = 'fastbckwrd';
-            button.innerHTML = '<i class="fas fa-fast-backward fa-sm"></i>';break;
-          case 1:
-            // Step backward
-            button.className = 'stepbckwrd';
-            button.innerHTML = '<i class="fas fa-step-backward fa-sm"></i>';break;
-          case 2:
-            // Play/Pause
-            button.className = 'play';
-            button.innerHTML = '<i class="fas fa-play fa-sm"></i>'; break;
-            //button.innerHTML = '<i class="fas fa-pause fa-sm"></i>'; break;
-          case 3:
-            // Step Forward
-            button.className = 'stepfrwrd';
-            button.innerHTML = '<i class="fas fa-step-forward fa-sm"></i>';break;
-          case 4:
-            // Fast Forward (Go to end)
-            button.className = 'fastfrwrd';
-            button.innerHTML = '<i class="fas fa-fast-forward fa-sm"></i>';break;
-          default:
-            alert('Unknown Flow Controls');
-        }
-        controls.appendChild(button);
-      }
+      let button = NodeFactory._button(row,id,value);
+      button.id = `${b || 'unknown'}__AT__${id}`;
+      button.classList.add("square");
+      button.classList.add(b);
+      button.innerHTML = `<i class="fa fa-${b}"></i>`;
+      controls.appendChild(button);
     });
 
     return container;
@@ -274,6 +299,8 @@ export class NodeFactory {
    * @author Jean-Christophe Taveau
    */
   static input_socket(row,id,value) {
+
+    // Create Input Socket
     let container = document.createElement('div');
     container.className = 'input';
     let socket = new Socket(id,'input');
@@ -307,10 +334,13 @@ export class NodeFactory {
    * @author Jean-Christophe Taveau
    */
   static numerical(row,id,value) {
+
+    // Create Numerical
    let container = document.createElement('div');
     container.className = 'flex-cell';
 
     let input = document.createElement('input');
+    input.id = `${row.name || 'unknown'}__AT__${id}`;
     input.className = "numerical";
     input.setAttribute("type", "text");
     input.setAttribute('name',row.name || 'unknown');
@@ -323,6 +353,7 @@ export class NodeFactory {
       event.srcElement.value = /^\d*\.?\d*$/.test(event.srcElement.value) ? value : value.slice(0,-1);
       return false;
     });
+    input.addEventListener('blur',(event) => console.info(`Add the ${event.srcElement.value} in queue`));
     container.appendChild(input);
     // TODO Add event onchanged
     return container;
@@ -447,6 +478,8 @@ export class NodeFactory {
    * @author Jean-Christophe Taveau
    */
   static output_socket(row,id,value) {
+
+    // Create Output Socket
     let container = document.createElement('div');
     container.className = 'output';
     let socket = new Socket(id,'output');

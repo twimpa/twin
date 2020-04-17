@@ -70,7 +70,12 @@ export class Draggable {
       
 
       // M A I N of `dragstart`
+
       console.log(event);
+      
+      // Clean popup
+      document.getElementById('popup').style.display = 'none';
+      
       // Init
       DRAG.button = event.which;
       [TWIN.tx,TWIN.ty] = getBoardTranslations();
@@ -92,6 +97,7 @@ export class Draggable {
       // Drop the tile, remove unneeded handlers
       window.addEventListener('mouseup', drag_end);
       event.preventDefault();
+
     };
 
     // M A I N

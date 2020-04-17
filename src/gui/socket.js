@@ -28,10 +28,10 @@ import {Draggable,edgeStart,edgeDrag,edgeEnd} from './draggable.js';
 
 export class Socket extends Draggable {
   
-  constructor(id,type) {
+  constructor(id,type,name='unknown') {
     super();
     let _button = document.createElement('button');
-    _button.id = (type === 'input') ? `insock_${id}[0]` : `outsock_${id}[0]`;
+    _button.id = (type === 'input') ? `${name}__TO__${id}` :`${name }__FROM__${id}`;
     _button.innerHTML = '<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>';
     this.draggable(_button,edgeStart,edgeDrag,edgeEnd);
     this.socket = _button;
