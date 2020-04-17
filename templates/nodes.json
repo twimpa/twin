@@ -23,7 +23,7 @@
     "properties": [
       {"label": "Raster","output": "raster","name": "raster"},
       {"label": "Image","select": ["TIFF","PNG","JPG","GIF"],"name": "format"},
-      {"label": "Open","file": "File..."},
+      {"label": "Open","file": "File...","name": "open"},
       {"canvas": "preview"}
     ]
   },
@@ -622,7 +622,16 @@
     "help": "forEach item of Iterable.\nCombined with `Aggregate` is equivalent to reduce(..)",
     "properties": [
       {"label": "Data", "output": "data"},
-      {"label": "Axis", "select": ["X","Y","Z","W"]},
+      {"label": "Axis", "select": ["X","Y","Z","W","Pixels"],"name": "axis"},
+      {"collapsible": 
+        {
+          "label": "Advanced",
+          "section": [
+            {"label": "Index", "readonly": "auto", "name": "index"},
+            {"flowcontrols": ["fast-backward","step-backward","pause","step-forward","fast-forward"]}
+          ]
+        }
+      },
       {"label": "Accumulator", "input": "accumulator"},
       {"label": "Array", "input": "array"}
     ]

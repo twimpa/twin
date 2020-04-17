@@ -87,7 +87,6 @@ export class Node extends Draggable {
   createHeader(node,id,metadata) {
   
     const shrinkExpand = (evt) => {
-      console.log('SHRINK/EXPAND');
 
       // Hide body, footer
       let id = evt.target.parentNode.id.match(/\d+/)[0];
@@ -126,7 +125,6 @@ export class Node extends Draggable {
     }
     
     const openTools = (preview) => (event) => {
-
       // Preview Action
       const preview_action = (evt) => {
         let eye = document.querySelector('.hamburger #eye');
@@ -188,8 +186,7 @@ export class Node extends Draggable {
 
     }
     
-
-    
+    // M A I N
     
     let nodeH = this.element;
 
@@ -207,42 +204,16 @@ export class Node extends Draggable {
     shrink.innerHTML = `<span class="expandB">&#9662;</span><span class="shrinkB">&#9656;</span>`;
     shrink.addEventListener('click', shrinkExpand);
     banner.appendChild(shrink);
-    // Part II - Description
+    // Part II - Description/Title
     banner.appendChild(document.createTextNode(node.description) );
     // Part III - Hamburger Menu
-    /*
-    let preview = node.preview ? button('fa-eye','Preview') : undefined;  //'<a title="Preview" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>' : '';
-    let info = button('fa-info',"Information");
-    */
-    
-    let menu = button('bars','Tools',openTools(node.preview)); // fa-ellipsis-v
-
-
-    // let desc =  node.description;
     let toolset = document.createElement('span');
     toolset.className = 'toolset';
     banner.appendChild(toolset);
-    /*
-    if (preview) {
-      toolset.appendChild(preview); 
-    }
-    */
-    // toolset.appendChild(info);
+    let menu = button('bars','Tools',openTools(node.preview)); // fa-ellipsis-v
     toolset.appendChild(menu);
     
-    // = `&nbsp;&nbsp;${desc} &nbsp;<span class="preview">${preview} ${info} ${close}</span>`;
-        
-    /*
-      head.innerHTML = `
-      <p title="${node.help ? node.help : "No Help"}" data-nodeid="${id}">
-        <a href="#" id= onclick="shrinkExpand(event)">
-          <span class="expandB">&#9662;</span>
-          <span class="shrinkB">&#9656;</span>
-        </a>
-        
-      </p>`;
-    */
-    
+    // Add event
     this.draggable( head,dragStartNode,dragOverNode, dragEndNode);
     return head;
   }
