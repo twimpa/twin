@@ -617,9 +617,9 @@
   {
     "id": 73,
     "class": "programming",
-    "name": "TWIN_FOLD",
-    "description": "Fold",
-    "help": "forEach item of Iterable.\nCombined with `Aggregate` is equivalent to reduce(..)",
+    "name": "TWIN_UNFOLD",
+    "description": "Unfold",
+    "help": "forEach item of Iterable.\nCombined with `Fold` is equivalent to reduce(..)",
     "properties": [
       {"label": "Data", "output": "data"},
       {"label": "Axis", "select": ["X","Y","Z","W","Pixels"],"name": "axis"},
@@ -639,9 +639,9 @@
   {
     "id": 74,
     "class": "programming",
-    "name": "TWIN_AGGREGATE",
-    "description": "Aggregate",
-    "help": "Store N-dimensional input in an Array of dimension N+1.\nMust be combined with `fold` or `map`",
+    "name": "TWIN_FOLD",
+    "description": "Fold",
+    "help": "Store N-dimensional input in an Array of dimension N+1.\nMust be combined with `unfold` or `map`",
     "properties": [
       {"label": "Data", "input": "data"},
       {"label": "Append", "checkbox": true, "name": "append"},

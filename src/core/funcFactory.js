@@ -40,13 +40,13 @@ export class FuncFactory {
     }
     switch(key) { 
     case Functions.TWIN_ADV_MM: break;
-    case Functions.TWIN_AGGREGATE: break;
+    case Functions.TWIN_FOLD: break;
     case Functions.TWIN_BASIC_MM: break;
     case Functions.TWIN_DEBUG: break;
     case Functions.TWIN_DUPLICATE: break;
     case Functions.TWIN_ENDSELECT: break;
     case Functions.TWIN_FILL: break;
-    case Functions.TWIN_FOLD: break;
+    case Functions.TWIN_UNFOLD: break;
     case Functions.TWIN_GET_STORAGE: break;
     case Functions.TWIN_GETTER: break;
     case Functions.TWIN_IFTHENELSE: break;
