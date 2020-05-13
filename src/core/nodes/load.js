@@ -24,13 +24,43 @@
 
 'use strict';
 
+
+import {PNMDecoder} from './io/PNMDecoder.js'
+import {CSVDecoder} from './io/CSVDecoder.js'
+
 /*
  * Load an image (jpg, png, gif)
  *
  */
 export const load = async (args) => {
 
-  const preloadRaster = (path) => {
+  
+  /*
+   * Loader of `Portable Any Map`
+   */
+  const loadASCIIRaster = (path) => {
+    return fetch(path)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(a_text => {
+      // Return a raster with TypedArray for pixels
+      const raster = PNMDecoder.decode(a_text);
+      console.log(raster);
+      return raster;
+    })
+    .catch((error) => {
+      alert(`ERR: Could not fetch the file ${path}`, error);
+    });
+  }
+  
+  /*
+   * Loader of Web supported File Format: GIF, JPEG, PNG
+   */
+  const loadRaster = (path) => {
     return fetch(path)
     .then((response) => {
       if (!response.ok) {
@@ -45,27 +75,76 @@ export const load = async (args) => {
         img.src = URL.createObjectURL(a_blob);
       });
     })
+    .then(img => {
+      console.log('Load...');
+      let w = img.naturalWidth;
+      let h = img.naturalHeight;
+      // Create canvas
+      let canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const pixels = ctx.getImageData(x, y, 1, 1).data;
+      return new TWRaster(pixels,w,h,1);
+      // return canvas;
+    })
     .catch((error) => {
       alert('There has been a problem with your fetch operation:', error);
     });
-
   }
   
+  
+  const loader = (path) => {
+    console.log('LOAD');
+    let extension = args.path.split('.').pop();
+    let canvas;
+    console.log(extension);
+    switch (extension) {
+    case 'csv':
+    case 'CSV': /* Comma-Separated Values */
+    case 'tsv':
+    case 'TSV': /* Tab-Separated Values */
+    case 'pbm':
+    case 'PBM': /* Portable Bitmap */
+    case 'pgm':
+    case 'PGM': /* Portable Graymap */
+    case 'ppm':
+    case 'PPM': /* Portable Pixmap */
+      console.log('Parse Portable Any Map');
+      canvas = loadASCIIRaster(path); break;
+    default: // GIF, JPG, PNG
+      canvas = loadRaster(path);
+    }
+    return canvas; // raster
+  }
   // Main
-  let raster = await preloadRaster(args.path);
-  let w = raster.naturalWidth;
-  let h = raster.naturalHeight;
-  // Create canvas
-  let canvas = document.createElement('canvas');
-  canvas.id = `fetch`;
-  document.body.append(canvas);
-  canvas.style.display = 'none';
-  canvas.width = w;
-  canvas.height = h;
-  canvas.getContext('2d').drawImage(raster, 0, 0);
 
-  console.log(w,h);
-  args.input = new TWImage(canvas,0,0,w,h);
+  let raster = await loader(args.path);
+  raster.preview(document.body);
+  console.log(raster.width,raster.height);
+  args.input = raster; // new TWImage(raster,0,0,canvas.width,canvas.height);
   return args;
 }
 
+/* 
+var my_array = // Uint32Array(...) TODO;
+var img_data = ctx.createImageData(canvas.width, canvas.height);
+var myArray = new Uint8ClampedArray(pixelCount);
+ctx.putImageData(my_array,0,0);
+var sourceBuffer32  = new UInt32Array(myArray.buffer);
+
+Endianness
+
+var my_buffer = new ArrayBuffer(size);
+var dataView = new DataView(my_buffer);
+
+var uint32lsb = dataView.getUint32(pos, true); // true = little-endian
+
+function isLSB() {
+    var b = new Uint8Array([255, 0]);
+    return ((new Uint16Array(b, b.buffer))[0] === 255);
+}
+
+
+*/

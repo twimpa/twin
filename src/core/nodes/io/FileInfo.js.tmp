@@ -1,0 +1,348 @@
+/* Adapted from ImageJ FileInfo Java Class */
+
+/** This class consists of public fields that describe an image file. */
+export class FileInfo {
+
+  /** 8-bit unsigned integer (0-255). */
+  static get GRAY8() {
+    return 0;
+  }
+  
+  /**  16-bit signed integer (-32768-32767). Imported signed images
+    are converted to unsigned by adding 32768. */
+  static get GRAY16_SIGNED() {
+    return 1;
+  }
+  
+  /** 16-bit unsigned integer (0-65535). */
+  static get GRAY16_UNSIGNED() {
+    return 2;
+  }
+  
+  /**  32-bit signed integer. Imported 32-bit integer images are
+    converted to floating-point. */
+  static get GRAY32_INT() {
+    return 3;
+  }
+  
+  /** 32-bit floating-point. */
+  static get GRAY32_FLOAT() {
+    return 4;
+  }
+  
+  /** 8-bit unsigned integer with color lookup table. */
+  static get COLOR8() {
+    return 5;
+  }
+  
+  /** 24-bit interleaved RGB. Import/export only. */
+  static get RGB() {
+    return 6;
+  }
+  
+  /** 24-bit planer RGB. Import only. */
+  static get RGB_PLANAR() {
+    return 7;
+  }
+  
+  /** 1-bit black and white. Import only. */
+  static get BITMAP() {
+    return 8;
+  }
+  
+  /** 32-bit interleaved ARGB. Import only. */
+  static get ARGB() {
+    return 9;
+  }
+  
+  /** 24-bit interleaved BGR. Import only. */
+  static get BGR() {
+    return 10;
+  }
+  
+  /**  32-bit unsigned integer. Imported 32-bit integer images are
+    converted to floating-point. */
+  static get GRAY32_UNSIGNED() {
+    return 11;
+  }
+  
+  /** 48-bit interleaved RGB. */
+  static get RGB48() {
+    return 12;
+  }
+
+  /** 12-bit unsigned integer (0-4095). Import only. */
+  static get GRAY12_UNSIGNED() {
+    return 13;
+  }
+
+  /** 24-bit unsigned integer. Import only. */
+  static get GRAY24_UNSIGNED() {
+    return 14;
+  }
+
+  /** 32-bit interleaved BARG (MCID). Import only. */
+  static get BARG() {
+    return 15;
+  }
+
+  /** 64-bit floating-point. Import only.*/
+  static get GRAY64_FLOAT() {
+    return 16;
+  }
+
+  /** 48-bit planar RGB. Import only. */
+  static get RGB48_PLANAR() {
+    return 17;
+  }
+
+  /** 32-bit interleaved ABGR. Import only. */
+  static get ABGR() {
+    return 18;
+  }
+
+  /** 32-bit interleaved CMYK. Import only. */
+  static get CMYK() {
+    return 19;
+  }
+
+  // File formats
+  static get UNKNOWN() {
+    return 0;
+  }
+  
+  static get RAW() {
+    return 1;
+  }
+  
+  static get TIFF() {
+    return 2;
+  }
+  
+  static get GIF_OR_JPG() {
+    return 3;
+  }
+  
+  static get FITS() {
+    return 4;
+  }
+  
+  static get BMP() {
+    return 5;
+  }
+  
+  static get DICOM() {
+    return 6;
+  }
+  
+  static get ZIP_ARCHIVE() {
+    return 7;
+  }
+  
+  static get PGM() {
+    return 8;
+  }
+  
+  static get IMAGEIO() {
+    return 9;
+  }
+  
+
+  // Compression modes
+  static get COMPRESSION_UNKNOWN() {
+    return 0;
+  }
+  
+  static get COMPRESSION_NONE() {
+    return 1;
+  }
+  
+  static get LZW() {
+    return 2;
+  }
+  
+  static get LZW_WITH_DIFFERENCING() {
+    return 3;
+  }
+  
+  static get JPEG() {
+    return 4;
+  }
+  
+  static get PACK_BITS() {
+    return 5;
+  }
+  
+  static get ZIP() {
+    return 6;
+  }
+  
+    
+  /** 
+   * @constructor
+   * Creates a FileInfo object with all of its fields set to their default value. 
+   */
+  constructor() {
+
+    /* File format (TIFF, GIF_OR_JPG, BMP, etc.). Used by the File/Revert command */
+    this.fileFormat = FileInfo.UNKNOWN;
+  
+    /* File type (GRAY8, GRAY_16_UNSIGNED, RGB, etc.) */
+    this.fileType = FileInfo.GRAY8;  
+    this.fileName = "Untitled";
+    this.directory = '';
+    this.url = '';
+    this.width;
+    this.height;
+    this.offset = 0;  // Use getOffset() to read
+    this.nImages = 1;
+    this.gapBetweenImages; // Use getGap() to read
+    this.whiteIsZero;
+    this.intelByteOrder;
+    this.compression = FileInfo.COMPRESSION_NONE;
+    this.stripOffsets = []; // int[]
+    this.stripLengths = []; // int[]
+    this.rowsPerStrip;
+    this.lutSize;
+    this.reds = []; // byte[]
+    this.greens = []; // byte[]
+    this.blues = []; // byte[]
+    this.pixels;
+    this.debugInfo;
+    this.sliceLabels = []; // String[]
+    this.info;
+    this.InputStream inputStream;
+    this.VirtualStack virtualStack;
+    this.sliceNumber; // used by FileInfoVirtualStack
+  
+    this.double pixelWidth=1.0;
+    this.double pixelHeight=1.0;
+    this.double pixelDepth=1.0;
+    this.unit;
+    this.calibrationFunction;
+    this.coefficients = []; // double[]
+    this.valueUnit;
+    this.double frameInterval;
+    this.description;
+    // Use <i>longOffset</i> instead of <i>offset</i> when offset>2147483647.
+    this.long longOffset;  // Use getOffset() to read
+    // Use <i>longGap</i> instead of <i>gapBetweenImages</i> when gap>2147483647.
+    this.long longGap;  // Use getGap() to read
+    // Extra metadata to be stored in the TIFF header
+    this.int[] metaDataTypes; // must be < 0xffffff
+    this.byte[][] metaData;
+    this.double[] displayRanges;
+    this.byte[][] channelLuts;
+    this.byte[] plot;      // serialized plot
+    this.byte[] roi;      // serialized roi
+    this.byte[][] overlay;  // serialized overlay objects
+    this.samplesPerPixel = 1;
+    this.openNextDir;
+    this.openNextName;
+  }
+    
+     /** Returns the file path. */
+  getFilePath() {
+    String dir = directory;
+    if (dir==null)
+      dir = "";
+    if (dir.length()>0 && !(dir.endsWith(File.separator)||dir.endsWith("/")))
+      dir += "/";
+    return dir + fileName;
+  }
+
+   /** Returns the offset as a long. */
+    public  long getOffset() {
+      return longOffset>0L ? longOffset : ((long)offset)&0xffffffffL;
+    }
+    
+    /** Returns the gap between images as a long. */
+    public  long getGap() {
+      return longGap>0L?longGap:((long)gapBetweenImages)&0xffffffffL;
+    }
+
+  /** Returns the number of bytes used per pixel. */
+  public int getBytesPerPixel() {
+    switch (fileType) {
+      case FileInfo.GRAY8: 
+      case FileInfo.COLOR8: 
+      case FileInfo.BITMAP: return 1;
+      case FileInfo.GRAY16_SIGNED: 
+      case FileInfo.GRAY16_UNSIGNED: return 2;
+      case FileInfo.GRAY32_INT: 
+      case FileInfo.GRAY32_UNSIGNED: 
+      case FileInfo.GRAY32_FLOAT: 
+      case FileInfo.ARGB: 
+      case FileInfo.GRAY24_UNSIGNED: 
+      case FileInfo.BARG: 
+      case FileInfo.ABGR: 
+      case FileInfo.CMYK: return 4;
+      case FileInfo.RGB: 
+      case FileInfo.RGB_PLANAR: 
+      case FileInfo.BGR: return 3;
+      case FileInfo.RGB48: 
+      case FileInfo.RGB48_PLANAR: return 6;
+      case FileInfo.GRAY64_FLOAT : return 8;
+      default: return 0;
+    }
+  }
+
+  toString() {
+    return
+      "name=" + fileName
+    + ", dir=" + directory
+    + ", width=" + width
+    + ", height=" + height
+    + ", nImages=" + nImages
+    + ", offset=" + getOffset()
+    + ", gap=" + getGap()
+    + ", type=" + getType()
+    + ", byteOrder=" + (intelByteOrder?"little":"big")
+    + ", format=" + fileFormat
+    + ", url=" + url
+    + ", whiteIsZero=" + (whiteIsZero?"t":"f")
+    + ", lutSize=" + lutSize
+    + ", comp=" + compression
+    + ", ranges=" + (displayRanges!=null?""+displayRanges.length/2:"null")
+    + ", samples=" + samplesPerPixel;
+  }
+    
+    /** Returns JavaScript code that can be used to recreate this FileInfo. */
+    public String getCode() {
+      String code = "fi = new FileInfo();\n";
+      String type = null;
+      if (fileType==GRAY8)
+        type = "GRAY8";
+      else if (fileType==GRAY16_UNSIGNED)
+        type = "GRAY16_UNSIGNED";
+      else if (fileType==GRAY32_FLOAT)
+        type = "GRAY32_FLOAT";
+      else if (fileType==RGB)
+        type = "RGB";
+      if (type!=null)
+        code += "fi.fileType = FileInfo."+type+";\n"; 
+      code += "fi.width = "+width+";\n";
+      code += "fi.height = "+height+";\n";
+      if (nImages>1)
+      code += "fi.nImages = "+nImages+";\n";    
+      if (getOffset()>0)
+      code += "fi.longOffset = "+getOffset()+";\n";    
+      if (intelByteOrder)
+      code += "fi.intelByteOrder = true;\n";    
+      return code;
+    }
+
+  /* private */
+  getType() {
+    const descriptions = [
+      "byte","short", "ushort", "int", "uint", "float", 
+      "byte(lut)", "RGB", "RGB(p)", "RGB48", "bitmap",
+      "ARGB","ABGR","BGR","BARG","CMYK","double","RGB48(p)"
+    ];
+    return descriptions[this.fileType] || '';
+
+  }
+
+
+} // End of class FileInfo
+

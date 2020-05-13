@@ -25,10 +25,12 @@
 'use strict';
 
 import {Board, TWIN} from './gui/index.js';
+import {load} from './core/nodes/load.js';
 
 export {
   Board,
-  TWIN
+  TWIN,
+  load,
 };
 
 

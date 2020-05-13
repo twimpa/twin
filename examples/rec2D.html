@@ -48,7 +48,7 @@
           template:2,
           metadata: {
             comment: "Open...",
-            pos: [50,259]
+            pos: [507,224]
           }
         },
         {
@@ -131,44 +131,45 @@
       edges : [
         {
           eid: 1,
-          sockets: ['raster__FROM__0','raster__TO__3'],
-          source: 0,out: 0,
-          target: 3, in: 0,
+          sockets: ['raster__FROM__0','raster2d__TO__3'],
         },
         {
           eid: 2,
-          sockets: ['data__FROM__17','raster__TO__14'],
-          source: 17,out: 0,
-          target: 14, in: 2,
+          sockets: ['data__FROM__17','raster2d__TO__14'],
         },
         {
           eid: 3,
+          sockets: ['array__FROM__6','angle__TO__20'],
           source: 6,out: 0,
           target: 20, in: 0,
         },
         {
           eid: 4,
+          sockets: ['rot_raster2d__FROM__20','data__TO__5'],
           source: 20,out: 0,
           target: 5, in: 0,
         },
         {
           eid: 5,
+          sockets: ['rsz_raster2d__FROM__14','raster2d__TO__20'],
           source: 14,out: 0,
           target: 20, in: 1,
         },
         {
           eid: 6,
+          sockets: ['array__FROM__5','data__TO__21'],
           source: 5,out: 0,
           target: 21, in: 0,
         },
         {
           eid: 7,
+          sockets: ['proj_data__FROM__21','raster2d__TO__22'],
           source: 21,out: 0,
           target: 22, in: 0,
         },
         {
           eid: 8,
-          sockets: ['stack@3','array@17'],
+          sockets: ['stack__FROM__3','array__TO__17'],
           source: 3,out: 0,
           target: 17, in: 1,
         }

@@ -109,7 +109,7 @@
     "description": "2D Viewer",
     "properties": [
       {"label": "Backdrop","checkbox": false,"name": "backdrop"},
-      {"label": "Raster","input": "raster"}
+      {"label": "Raster","input": "raster", "name": "raster2d"}
     ]
   },
   {
@@ -215,11 +215,11 @@
     "name": "TWIN_TO_STACK",
     "description": "toStack",
     "properties": [
-      {"label": "Stack", "output": "stack"},
+      {"label": "Stack", "output": "stack","name": "stack"},
       {"label": "nRows", "numerical": 1, "name": "nrows"},
       {"label": "nCols", "numerical": 1, "name": "ncols"},
       {"label": "Border", "numerical": 0, "name": "border"},
-      {"label": "Raster","input": "raster"}
+      {"label": "Raster","input": "raster", "name": "raster2d"}
     ]
   },
   {
@@ -402,10 +402,10 @@
     "help": "Rotate a raster by an angle in degrees",
     "preview": true,
     "properties": [
-      {"label": "Raster", "output": "raster"},
+      {"label": "Raster", "output": "raster", "name":"rot_raster2d"},
       {"label": "Mode", "select": ["Nearest","Bilinear","Bicubic"],"name": "mode"},
       {"label": "Angle", "input": "value", "numerical": 0, "name": "angle"},
-      {"label": "Raster", "input": "raster"}
+      {"label": "Raster", "input": "raster","name":"raster2d"}
     ]
   },
   {
@@ -416,11 +416,11 @@
     "help": "Resize a raster",
     "preview": true,
     "properties": [
-      {"label": "Raster", "output": "raster"},
+      {"label": "Raster2D", "output": "raster","name": "rsz_raster2d"},
       {"label": "Mode", "select": ["Nearest","Bilinear","Bicubic"],"name": "interpolation"},
       {"label": "Width", "input": "value", "numerical": 0, "name": "rsz_width"},
       {"label": "Height", "input": "value", "numerical": 0, "name": "rsz_height"},
-      {"label": "Raster", "input": "raster"}
+      {"label": "Raster2D", "input": "raster","name": "raster2d"}
     ]
   },
   {
@@ -595,7 +595,7 @@
     "description": "Range",
     "help": "Python function range(..)",
     "properties": [
-      {"label": "Flow", "output": "data"},
+      {"label": "Flow", "output": "data","name": "array"},
       {"label": "Start", "numerical": 0, "name": "start"},
       {"label": "Stop", "numerical": 10, "name": "stop"},
       {"label": "Step", "numerical": 1, "name": "step"}
@@ -621,7 +621,7 @@
     "description": "Unfold",
     "help": "forEach item of Iterable.\nCombined with `Fold` is equivalent to reduce(..)",
     "properties": [
-      {"label": "Data", "output": "data"},
+      {"label": "Data", "output": "data", "name": "data"},
       {"label": "Axis", "select": ["X","Y","Z","W","Pixels"],"name": "axis"},
       {"collapsible": 
         {
@@ -632,8 +632,8 @@
           ]
         }
       },
-      {"label": "Accumulator", "input": "accumulator"},
-      {"label": "Array", "input": "array"}
+      {"label": "Array", "input": "array","name": "array"},
+      {"label": "Accumulator", "input": "accumulator","name": "accumulator"}
     ]
   },
   {
@@ -643,9 +643,9 @@
     "description": "Fold",
     "help": "Store N-dimensional input in an Array of dimension N+1.\nMust be combined with `unfold` or `map`",
     "properties": [
-      {"label": "Data", "input": "data"},
+      {"label": "Array", "output": "array","name": "array"},
       {"label": "Append", "checkbox": true, "name": "append"},
-      {"label": "Array", "output": "array"}
+      {"label": "Data", "input": "data","name": "data"}
     ]
   },
   {
@@ -667,10 +667,10 @@
     "description": "Project",
     "help": "Projetct a N-dimensional input in an Array of dimension N-1.\nCombined with `fold/unfold` is equivalent to reduce(..)",
     "properties": [
-      {"label": "Data", "input": "data"},
+      {"label": "Data", "input": "data","name": "data"},
       {"label": "Axis", "select": ["X","Y","Z","W"]},
       {"label": "Expr.", "select": ["Sum","Average","Std.Dev","Variance"]},
-      {"label": "Data", "output": "data"}
+      {"label": "Data", "output": "data","name": "proj_data"}
     ]
   },
   {

@@ -82,7 +82,7 @@ const info = async (args) => {
 /*
  * Load an image (jpg, png, gif)
  *
- */
+
 const load = async (args) => {
 
   const preloadRaster = (path) => {
@@ -123,6 +123,7 @@ const load = async (args) => {
   args.input = new TWImage(canvas,0,0,w,h);
   return args;
 }
+*/
 
 /*
  * Normalize a raster

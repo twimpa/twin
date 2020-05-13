@@ -28,11 +28,16 @@ import {Draggable,dragStartNode,dragOverNode, dragEndNode,resizeStart,resizeMove
 import {NodeFactory} from './nodeFactory.js';
 import {WidgetFactory} from './widgetFactory.js';
 
-
 export class Node extends Draggable {
 
   /**
    * @constructor
+   *
+   * @param {number} id - DOM id
+   * @param {object} template - Node Template containing the description of all the widgets
+   * @param {object} metadata - Parameters of the widgets
+   *
+   * @author Jean-Christophe Taveau
    */
   constructor(id,template,metadata) {
     super();
@@ -44,15 +49,33 @@ export class Node extends Draggable {
     this.hasOutputs = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'output') || p.output !== undefined);
     this.hasInputs  = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'input')  || p.input !== undefined);
 
-    this.createNode(template,id,metadata);
+    // Create Widgets
+    this.createNode(id,template,metadata);
+    
   }
 
+  /**
+   * Is this node a `Consumer`
+   *
+   */
+  isConsumer() {
+    return this.hasInputs && !this.hasOutputs();
+  }
+  
+  /**
+   * Is this node a `Producer`
+   *
+   */
+  isProducer() {
+    return this.hasOutputs && !this.hasInputs();
+  }
+  
   /*
    * Private
    * Create Node
    * @author Jean-Christophe Taveau
    */
-  createNode(node,id,metadata) {
+  createNode(id,template,metadata) {
 
     // Main
     let nodeH = this.element;
@@ -61,16 +84,16 @@ export class Node extends Draggable {
     nodeH.style.top  = (metadata.pos) ? `${metadata.pos[1]}px`: `${Math.floor(Math.random() * 600)}px`;
 
     // Head
-    let head = this.createHeader(node,id,metadata);
+    let head = this.createHeader(template,id,metadata);
 
     // Shrink
-    let shrink = this.createShrinkArea(node,id,metadata);
+    let shrink = this.createShrinkArea(template,id,metadata);
 
     // Body
-    let body = this.createBody(node,id,metadata);
+    let body = this.createBody(template,id,metadata);
     
     // Footer
-    let foot = this.createFooter(node,id,metadata);
+    let foot = this.createFooter(template,id,metadata);
 
     // Append all the parts
     nodeH.appendChild(head);
@@ -130,7 +153,7 @@ export class Node extends Draggable {
     let toolset = document.createElement('span');
     toolset.className = 'toolset';
     banner.appendChild(toolset);
-    let menu = WidgetFactory.button('bars',{icon:'bars',title:'Tools'},openTools(node.preview)); // fa-ellipsis-v
+    let menu = WidgetFactory.button('bars',{icon:'bars',title:'Tools',name:'hamburger'},{},openTools(node.preview)); // fa-ellipsis-v
     menu.classList.remove('button');
     toolset.appendChild(menu);
     
@@ -160,7 +183,7 @@ export class Node extends Draggable {
    *
    * @author Jean-Christophe Taveau
    */
-  createBody(node,id,metadata) {
+  createBody(template,id,metadata) {
 
     // Body
     let body = document.createElement('div');
@@ -168,7 +191,7 @@ export class Node extends Draggable {
     body.className = 'body';
     // Main content
 
-    NodeFactory.createContent( node.properties,body,this.id, metadata);
+    NodeFactory.createContent( template.properties,body,this.id, metadata);
 
     return body;
   }

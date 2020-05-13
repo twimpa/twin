@@ -34,11 +34,11 @@ export class NodeFactory {
    *
    * @author Jean-Christophe Taveau
    */
-  static createContent(rows,parent,id, metadata) {
+  static createContent(template_rows,parent,id, metadata) {
     let nodeid = id;
     let outputs = 0;
     let inputs = 0;
-    rows.forEach( (row,index) => {
+    template_rows.forEach( (row,index) => {
       if (row.layer !== undefined) {
         let container = document.createElement('div');
         container.className = 'layer';
@@ -48,8 +48,8 @@ export class NodeFactory {
         container.style.display = (index === 0) ? 'block': 'none';
       }
       else {
-        let container = WidgetFactory.createRow(row,nodeid,metadata[row.name]);
-
+        let container = WidgetFactory.createRow(nodeid,row,metadata,(e) => {});
+/*
         if (row.output !== undefined) {
           container.id = `o_${outputs++}`;
           container.classList.add('output');
@@ -58,7 +58,7 @@ export class NodeFactory {
           container.id = `i_${inputs++}`;
           container.classList.add('input');
         }
-
+*/
         parent.appendChild(container);
       }
     });
@@ -127,9 +127,9 @@ export class NodeFactory {
         console.info('Delete Node and Remove connected edges');
       }
       
-    const item = (id,icon,title,callback,metadata) => {
+    const item = (id,icon,title,callback,template) => {
       let item = document.createElement('li');
-      let b = WidgetFactory.button(id,metadata,callback);
+      let b = WidgetFactory.button(id,template,{},callback);
       b.classList.remove('button');
       item.appendChild(b);
       return item;

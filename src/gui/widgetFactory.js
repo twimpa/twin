@@ -30,19 +30,28 @@ import {Socket} from './socket.js';
 export class WidgetFactory {
 
   /**
+   * Create a Row
+   * A row is usually made of a `Label` and a `Widget`. 
+   * The label may be optional (ex: Widget collapsible).
+   * An input or output socket may be associated with this row.
+   *
+   * @param {number} node_id - Node ID in DOM
+   * @param {object} template_row - Row widgets as described in the template
+   * @param {object} metadata - Row properties containing the various values of the widgets
+   * @param {function} callback - Action triggered by a `change` Event on the widget.
    * 
    * @author Jean-Christophe Taveau
    */
-  static createRow(row,node_id, metadata) {
+  static createRow(node_id, template_row, metadata, callback) {
     // Extract widget type
-    let cells = Object.keys(row).filter( prop => ['name','source','zip'].indexOf(prop) === -1);
+    let cells = Object.keys(template_row).filter( prop => ['name','source','zip'].indexOf(prop) === -1);
     let numcolumns = cells.filter( type => ['collapsible','input','output','source','name','zip'].indexOf(type) === -1).length;
     let container = document.createElement('div');
     container.className = `row-${numcolumns}`;
 
     cells.forEach( type => {
-      console.log(type,row);
-      let widget = WidgetFactory.createWidget(type,row,node_id,metadata);
+      console.log(type,template_row,metadata);
+      let widget = WidgetFactory.createWidget(node_id,type,template_row,metadata,callback);
       console.log(widget);
       container.appendChild(widget);
     });
@@ -52,27 +61,28 @@ export class WidgetFactory {
   }
   
   
-  static createWidget(type,row,id,value) {
+  static createWidget(id,type,row,metadata,action_func) {
     let element;
     switch (type) {
-      case 'button': element = WidgetFactory.button(row,id,value); break;
-      case 'canvas': element = WidgetFactory.canvas(row,id,value); break;
-      case 'checkbox': element = WidgetFactory.checkbox(row,id,value); break;
-      case 'collapsible': element = WidgetFactory.collapsible(row,id,value); break;
-      case 'file': element = WidgetFactory.file(row,id,value); break;
-      case 'flowcontrols': element = WidgetFactory.flowcontrols(row,id,value); break;
-      case 'input': element = WidgetFactory.input_socket(row,id,value); break;
-      case 'label': element = WidgetFactory.label(row,id,value); break;
-      case 'numerical': element = WidgetFactory.numerical(row,id,value); break;
-      case 'readonly': element = WidgetFactory.readonly(row,id,value); break;
-      case 'selectlayer': element = WidgetFactory.selectlayer(row,id,value); break;
-      case 'select': element = WidgetFactory.select(row,id,value); break;
-      case 'output': element = WidgetFactory.output_socket(row,id,value); break;
-      case 'text': element = WidgetFactory.text(row,id,value); break;
+      case 'button': element = WidgetFactory.button(id,row,metadata,action_func); break;
+      case 'canvas': element = WidgetFactory.canvas(id,row,metadata,action_func); break;
+      case 'checkbox': element = WidgetFactory.checkbox(id,row,metadata,action_func); break;
+      case 'collapsible': element = WidgetFactory.collapsible(id,row,metadata,action_func); break;
+      case 'file': element = WidgetFactory.file(id,row,metadata,action_func); break;
+      case 'flowcontrols': element = WidgetFactory.flowcontrols(id,row,metadata,action_func); break;
+      case 'input': element = WidgetFactory.input_socket(id,row,metadata,action_func); break;
+      case 'label': element = WidgetFactory.label(id,row,metadata,action_func); break;
+      case 'numerical': element = WidgetFactory.numerical(id,row,metadata,action_func); break;
+      case 'readonly': element = WidgetFactory.readonly(id,row,metadata,action_func); break;
+      case 'selectlayer': element = WidgetFactory.selectlayer(id,row,metadata,action_func); break;
+      case 'select': element = WidgetFactory.select(id,row,metadata,action_func); break;
+      case 'output': element = WidgetFactory.output_socket(id,row,metadata,action_func); break;
+      case 'text': element = WidgetFactory.text(id,row,metadata,action_func); break;
       default: 
         alert(`Unknown widget ${type}`);
     }
     
+    /*
     let container;
     if (type !== 'input' && type !== 'output') {
       container = document.createElement('div');
@@ -82,6 +92,11 @@ export class WidgetFactory {
     else {
       container = element;
     }
+    */
+    
+    let container = document.createElement('div');
+    container.className = 'flex-cell';
+    container.appendChild(element);
     return container;
   }
   
@@ -89,24 +104,24 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static button(id,metadata,action_func) {
+  static button(id,template_row,metadata,action_func) {
     let e = document.createElement('a');
-    e.id = `${metadata.name || 'unknown'}__AT__${id}`;
+    e.id = `${template_row.name || 'unknown'}__AT__${id}`;
     e.className = 'button';
-    if (metadata.icon) {
+    if (template_row.icon) {
       let i = document.createElement('i');
-      i.className = `fa fa-${metadata.icon}`;
+      i.className = `fa fa-${template_row.icon}`;
       i.ariaHidden = true;
       e.appendChild(i);
     }
     else {
-      e.innerHTML = metadata.button;
+      e.innerHTML = template_row.button;
     }
     e.setAttribute('href','#');
-    e.title = metadata.title || 'No Tooltip';
+    e.title = template_row.title || 'No Tooltip';
 
-    if ( metadata.display) {
-      e.style.display = metadata.display;
+    if ( template_row.display) {
+      e.style.display = template_row.display;
     }
     e.addEventListener('click',action_func);
     return e;
@@ -117,7 +132,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static canvas(row,id,value) {
+  static canvas(id,row,metadata,action_func) {
     // <div class="graphics"><canvas></canvas></div>
     // Check if canvas is already created TODO
     let container = document.createElement('div');
@@ -130,13 +145,13 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static checkbox(row,id,value) {
+  static checkbox(id,row,metadata,action_func) {
     let input = document.createElement('input');
     input.id = `${row.name || 'unknown'}__AT__${id}`;
     input.className = "check";
     input.setAttribute("type", "checkbox");
     input.setAttribute('name',row.name || 'unknown');
-    input.setAttribute('value',value || row.checkbox);
+    input.setAttribute('value',row.checkbox);
     input.checked = row.checkbox;
 
     // TODO Add event onchanged
@@ -147,7 +162,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static collapsible(row,id,value) {
+  static collapsible(id,row,metadata,action_func) {
     let container = document.createElement('div');
     let input = document.createElement('input');
     input.id = `collapsible_${id}`;
@@ -168,7 +183,7 @@ export class WidgetFactory {
     content.className = 'collapsible-content';
     container.appendChild(content);
     row.collapsible.section.forEach( section_row => {
-      let widgets_row = WidgetFactory.createRow(section_row,id,value);
+      let widgets_row = WidgetFactory.createRow(id,section_row,undefined);
       content.appendChild(widgets_row);
     });
 
@@ -186,7 +201,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static file(row,id,value) {
+  static file(id,row,metadata,action_func) {
     // Create File Widget
    let container = document.createElement('div');
     // From MDN
@@ -221,13 +236,13 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static flowcontrols(row,id,value) {
+  static flowcontrols(id,row,metadata,action_func) {
     let buttons = row.flowcontrols;
     let controls = document.createElement('div');
     controls.className = 'flowcontrols';
 
     [...buttons].forEach ( (b,index) => {
-      let button = WidgetFactory.button(row,id,value);
+      let button = WidgetFactory.button(id,row);
       button.id = `${b || 'unknown'}__AT__${id}`;
       button.classList.add("square");
       button.classList.add(b);
@@ -243,11 +258,11 @@ export class WidgetFactory {
    *
    * @author Jean-Christophe Taveau
    */
-  static input_socket(row,id,value) {
+  static input_socket(id,row,metadata,action_func) {
     // Create Input Socket
     let container = document.createElement('div');
     container.className = 'input';
-    let socket = new Socket(id,'input');
+    let socket = new Socket(id,'input',row.name);
     container.appendChild(socket.button);
     return container;
   }
@@ -257,14 +272,14 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static label(row,id,value) {
+  static label(id,row,metadata,action_func) {
     let e = document.createElement('label');
     e.innerHTML = row.label;
     if (row.output === undefined && row.input === undefined) {
       e.innerHTML += '&nbsp;';
     }
     else {
-      // e.title = metadata.input || metadata.output;
+      // e.title = row.input || row.output;
     }
 
     return e;
@@ -275,18 +290,18 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static numerical(row,id,value) {
+  static numerical(id,template_row,metadata,action_func) {
 
     // Create Numerical
     let input = document.createElement('input');
-    input.id = `${row.name || 'unknown'}__AT__${id}`;
+    input.id = `${template_row.name || 'unknown'}__AT__${id}`;
     input.className = "numerical";
     input.setAttribute("type", "text");
-    input.setAttribute('name',row.name || 'unknown');
+    input.setAttribute('name',template_row.name || 'unknown');
     input.setAttribute('minlength',4);
     input.setAttribute('maxlength',40);
     // input.setAttribute('size',10);
-    input.setAttribute('value',value || row.numerical);
+    input.setAttribute('value',metadata[template_row.name] || template_row.numerical);
     input.addEventListener('input',(event)=> {
       let value = event.srcElement.value;
       event.srcElement.value = /^\d*\.?\d*$/.test(event.srcElement.value) ? value : value.slice(0,-1);
@@ -302,7 +317,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static readonly(row,id,value) {
+  static readonly(id,row,metadata,action_func) {
     let input = document.createElement('input');
     input.className = "readonly";
     input.readOnly = true;
@@ -311,7 +326,7 @@ export class WidgetFactory {
     input.setAttribute('minlength',4);
     input.setAttribute('maxlength',40);
     // input.setAttribute('size',10);
-    input.setAttribute('value',value || row.readonly);
+    input.setAttribute('value',row.readonly);
 
     // TODO Add event onchanged
     return input;
@@ -321,7 +336,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static select(row,id,value) {
+  static select(id,row,metadata,action_func) {
     let container = document.createElement('div');
     container.className = "select-container";
     let select = document.createElement('select');
@@ -335,7 +350,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static selectlayer(row,id,value) {
+  static selectlayer(id,row,metadata,action_func) {
     let container = document.createElement('div');
     container.className = "flex-cell select-container";
     let select = document.createElement('select');
@@ -352,7 +367,7 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static text(row,id,value) {
+  static text(id,row,metadata,action_func) {
 
     let input = document.createElement('input');
     input.className = "numerical";
@@ -409,12 +424,12 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static output_socket(row,id,value) {
+  static output_socket(id,row,metadata,action_func) {
 
     // Create Output Socket
     let container = document.createElement('div');
     container.className = 'output';
-    let socket = new Socket(id,'output');
+    let socket = new Socket(id,'output',row.name);
     container.appendChild(socket.button);
 
     return container;

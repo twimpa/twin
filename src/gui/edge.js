@@ -41,8 +41,10 @@ export class Edge {
   // Private
   _createEdge(idE,idS,idT,input,output) {
     // Source
-    let nodeS = document.querySelector(`#node_${idS} #o_${output} button`);
-    let shrinkNodeS = document.querySelector(`#node_${idS} .out_socket`);
+    let nodeS = document.querySelector(`#${idS}`); //`#node_${idS} #o_${output} button`);
+    console.log(idS,nodeS);
+    console.log(idS.match(/__FROM__(\d+)/));
+    let shrinkNodeS = document.querySelector(`#node_${idS.match(/__FROM__(\d+)/)[1]} .out_socket`);
     let tmp = [idE];
     if (nodeS.dataset.edge !== undefined) {
       console.log(nodeS.dataset.edge);
@@ -61,8 +63,9 @@ export class Edge {
     }
     
     // Target
-    let nodeT = document.querySelector(`#node_${idT} #i_${input} button`);
-    let shrinkNodeT = document.querySelector(`#node_${idT} .in_socket`);
+    let nodeT = document.querySelector(`#${idT}`);
+        console.log(idT);
+    let shrinkNodeT = document.querySelector(`#node_${idT.match(/__TO__(\d+)/)[1]}  .in_socket`);
     nodeT.dataset.edge = idE;
     if (shrinkNodeT.dataset.edge !== undefined) {
       let array = JSON.parse(shrinkNodeT.dataset.edge);

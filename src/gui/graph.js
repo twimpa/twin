@@ -26,7 +26,7 @@
 
 import {Node} from './node.js';
 import {Edge} from './edge.js';
-import {FuncFactory} from '../core/funcFactory.js';
+
 
 export class Graph {
 
@@ -60,8 +60,7 @@ export class Graph {
     this.nodes.push(node);
     this.root.appendChild(node.element);
     // Add the engine in the queue waiting for execution (the `Consumer`).
-    let func = FuncFactory.func(template.name);
-    this.pipeline.push(func);
+    this.pipeline.push(node.engine);
     return node;
   }
 
@@ -71,7 +70,6 @@ export class Graph {
    * @author Jean-Christophe Taveau
    */
   appendNodeByName(templateName,nodeID = -1,metadata={}) {
-
     let newid = (nodeID !== -1) ? nodeID : this.lastID() + 1; // TODO HACK
     let node =  new Node(newid,this.templates.find( n => n.name === templateName),metadata);
     this.nodes.push(node);
@@ -118,7 +116,7 @@ export class Graph {
   createEdges(edges) {
     let ctx = this.context;
     edges.forEach( (edge) => {
-      let e = new Edge(edge.eid,edge.source,edge.target,edge.in,edge.out);
+      let e = new Edge(edge.eid,edge.sockets[0],edge.sockets[1],edge.in,edge.out);
       this.edges.push(e);
       ctx.append(e.line);
     });
@@ -146,6 +144,15 @@ export class Graph {
   }
 
   /**
+   * Executes the active nodes in this graph
+   *
+   * @author Jean-Christophe Taveau
+   */
+  run() {
+    this.pipeline.forEach( func => func() );
+  }
+
+  /**
    * Update edges of All the nodes defined in an array
    *
    * @param {array} nodes - Array of nodes whose edges must be updated
@@ -160,7 +167,7 @@ export class Graph {
   }
 
   /**
-   * Update edges of a node
+   * Update edges of a specific node
    *
    * @param {node} node - Node whose edges must be updated
    * @param {boolean} shrinkMode - State of the node appearance (shrinked or expanded)
