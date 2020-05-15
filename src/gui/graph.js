@@ -26,6 +26,7 @@
 
 import {Node} from './node.js';
 import {Edge} from './edge.js';
+import {TWDataFlow} from '../core/TWDataFlow.js';
 
 
 export class Graph {
@@ -38,7 +39,7 @@ export class Graph {
     this.templates;
     this.nodes = [];
     this.edges = [];
-    this.pipeline = [];
+    this.pipeline = new TWDataFlow(this);
     this.context; // svg or canvas/webgl?
     this.root; // HTML Parent node for all the nodes
   }
@@ -60,7 +61,7 @@ export class Graph {
     this.nodes.push(node);
     this.root.appendChild(node.element);
     // Add the engine in the queue waiting for execution (the `Consumer`).
-    this.pipeline.push(node.engine);
+    this.pipeline.add(node);
     return node;
   }
 
@@ -150,6 +151,18 @@ export class Graph {
    */
   run() {
     this.pipeline.forEach( func => func() );
+  }
+
+  /**
+   * Update the node `id` and following
+   *
+   * @param {array} nodes - Array of nodes whose edges must be updated
+   *
+   * @author Jean-Christophe Taveau
+   */
+  update(node_id) {
+    console.log(node_id);
+    this.pipeline.update(node_id);
   }
 
   /**

@@ -59,7 +59,7 @@ export class Node extends Draggable {
    *
    */
   isConsumer() {
-    return this.hasInputs && !this.hasOutputs();
+    return this.hasInputs && !this.hasOutputs;
   }
   
   /**
@@ -67,11 +67,11 @@ export class Node extends Draggable {
    *
    */
   isProducer() {
-    return this.hasOutputs && !this.hasInputs();
+    return this.hasOutputs && !this.hasInputs;
   }
   
   /*
-   * Private
+   * @private
    * Create Node
    * @author Jean-Christophe Taveau
    */

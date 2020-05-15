@@ -32,19 +32,23 @@ import {CSVDecoder} from './io/CSVDecoder.js'
  * Load an image (jpg, png, gif)
  *
  */
-export const load = async (args) => {
+export const load = async (node_id,args) => {
 
   
   /*
    * Loader of `Portable Any Map`
    */
-  const loadASCIIRaster = (path) => {
-    return fetch(path)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.text();
+  const loadASCIIRaster = (file) => {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+
+      reader.onerror = reject;
+
+      reader.readAsText(file);
     })
     .then(a_text => {
       // Return a raster with TypedArray for pixels
@@ -53,7 +57,7 @@ export const load = async (args) => {
       return raster;
     })
     .catch((error) => {
-      alert(`ERR: Could not fetch the file ${path}`, error);
+      alert(`ERR: Could not fetch the file ${file.path}`, error);
     });
   }
   
@@ -95,9 +99,10 @@ export const load = async (args) => {
   }
   
   
-  const loader = (path) => {
+  const loader = (file) => {
     console.log('LOAD');
-    let extension = args.path.split('.').pop();
+    let path = file.name;
+    let extension = path.split('.').pop();
     let canvas;
     console.log(extension);
     switch (extension) {
@@ -112,16 +117,16 @@ export const load = async (args) => {
     case 'ppm':
     case 'PPM': /* Portable Pixmap */
       console.log('Parse Portable Any Map');
-      canvas = loadASCIIRaster(path); break;
+      canvas = loadASCIIRaster(file); break;
     default: // GIF, JPG, PNG
-      canvas = loadRaster(path);
+      canvas = loadRaster(file);
     }
     return canvas; // raster
   }
   // Main
 
-  let raster = await loader(args.path);
-  raster.preview(document.body);
+  let raster = await loader(args['open__AT__0']);
+  raster.preview(document.querySelector(`#node_${node_id} .preview`) || document.body);
   console.log(raster.width,raster.height);
   args.input = raster; // new TWImage(raster,0,0,canvas.width,canvas.height);
   return args;

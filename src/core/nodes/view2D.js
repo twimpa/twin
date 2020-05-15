@@ -1,6 +1,6 @@
 /*
- *  TWIN: Tiny Web Image Nodes
- *  Copyright (C) 2019  Jean-Christophe Taveau.
+ *  TWIN: Tiny Web Image Processing Nodes
+ *  Copyright (C) 2019-2020 Jean-Christophe Taveau.
  *
  *  This file is part of TWIN
  *
@@ -24,26 +24,14 @@
 
 'use strict';
 
-
-export class TWIN {
-
-  static get version() {
-    return "0.1";
-  } 
-  
-  static get authors() {
-    return ["Jean-Christophe Taveau"];
-  }
-
-  static init() {
-    console.log('INIT TWIN');
-    this.zoom = 1.0;
-    this.translate = {x:0,y:0};
-    this.tx = 0;
-    this.ty = 0;
-    this.graph;
-    this.args = {};
-  }
-  
-  
-} // End of class TWIN
+/*
+ * Display in full-size a raster.
+ * This node triggers the pipeline of full-size raster(s).
+ * 
+ * @param {object} args - A collection of parameters
+ * 
+ * @author Jean-Christophe Taveau.
+ */
+export const view2D = async (node_id,args) => {
+  args.input.show(args.count);
+}

@@ -38,16 +38,18 @@ export class TWRaster {
     this.depth = d;
   }
   
-  preview(parent) {
+  preview(canvas) {
     // Preview in canvas
     // Check if canvas `preview` already exists
-    let canvas = document.createElement("canvas");
-    canvas.id = 'preview';
+    /*
+    let canvas = document.querySelector(`#node_${parent.id} canvas`);
+    canvas.className = 'preview';
     parent.appendChild(canvas);
+    */
     canvas.width = this.width;   // width defined in displayBuffer
     canvas.height = this.height; // height defined in displayBuffer
     // TODO
-    canvas.style.width = `128px`; // Width from parent
+    // canvas.style.width = '94%'; // Width from parent
     // If the raster is small, set `no-interpolation` mode.
     canvas.style.imageRendering = 'optimizespeed';
     let ctx = canvas.getContext('2d');

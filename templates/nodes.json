@@ -22,7 +22,6 @@
     "description": "Image...",
     "properties": [
       {"label": "Raster","output": "raster","name": "raster"},
-      {"label": "Image","select": ["TIFF","PNG","JPG","GIF"],"name": "format"},
       {"label": "Open","file": "File...","name": "open"},
       {"canvas": "preview"}
     ]

@@ -26,38 +26,56 @@
 
 import {FuncFactory} from '../core/funcFactory.js';
 
-class TWDataFlow {
+export class TWDataFlow {
 
-  constructor(nodes) {
-    this.pipeline = [];
+  constructor(graph) {
+    this.flow = [];
     this.lastProducer = -1;
     this.firstConsumer = 0;
   }
 
+  /**
+   * Add node function in DataFlow
+   *
+   * @author Jean-Christophe Taveau
+   */
   add(node) {
     // Add function (core engine of the node)
-    node.engine = FuncFactory.func(template.name);
+    node.engine = FuncFactory.func(node.template.name);
         
     if (node.isProducer()) {
-      this.pipeline.unshift(node.engine);
+      this.flow.unshift(node);
       this.lastProducer++;
       this.firstConsumer++;
     }
     else if (node.isConsumer()) {
-      this.pipeline.push(node.engine);
+      this.flow.push(node);
     }
     else {
       // Producer AND Consumer - must be inserted between `lastProducer` and `firstConsumer`.
       let index = this.lastProducer;
       // Check inputs and outputs indexes
 
-      this.pipeline.splice(index,0,node.engine);
+      this.flow.splice(index,0,node);
       this.firstConsumer++;
     }
   }
-  
+
+  /**
+   * Remove node function in DataFlow
+   *
+   * @author Jean-Christophe Taveau
+   */
   remove(node) {
   
+  }
+  
+  update(node_id) {
+    // Get index in pipeline
+    let index = this.flow.reduce( (accu,n,i) => (n.id === node_id) ? {node: n,index: i} : accu, {node: undefined, index: -1} ).index;
+    console.log('INDEX',index);
+    // Run node and following
+    this.flow.slice(index).forEach( n => n.engine(n.id,TWIN.args));
   }
   
   async run(pipeline,root) {

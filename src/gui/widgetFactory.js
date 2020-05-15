@@ -137,7 +137,9 @@ export class WidgetFactory {
     // Check if canvas is already created TODO
     let container = document.createElement('div');
     container.className = 'graphics';
-    container.appendChild(document.createElement('canvas'));
+    let cnvs = document.createElement('canvas');
+    cnvs.className = 'preview';
+    container.appendChild(cnvs);
     return container;
   }
 
@@ -213,14 +215,19 @@ export class WidgetFactory {
     
     inp.addEventListener("change", (event) => {
       let files = event.target.files;
-      let root = WidgetFactory.getNodeElement(event.target);
+      let root = document.querySelector(`#node_${id}`); //WidgetFactory.getNodeElement(event.target);
       root.dataset.file = files[0].name;
+      TWIN.args[inp.id] = files[0]; 
+      // Update 
+      TWIN.graph.update(id); 
+      /*
       // Preview
-      let c = document.querySelector(`#node_${id} canvas`);
+      let c = document.querySelector(`#node_${id} .preview`);
       let ctx = c.getContext("2d");
       ctx.beginPath();
       ctx.arc(100, 75, 50, 0, 2 * Math.PI);
       ctx.stroke(); 
+      */
     });
     // <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden">
     let e = document.createElement('label');

@@ -78,8 +78,6 @@ export class Board extends Draggable {
     this.boardgame.addEventListener('change', (ev) => {
       console.log('something changed');
       console.log(ev);
-      console.log(NodeFactory.getNodeElement(ev.target));
-      console.log(JSON.stringify(NodeFactory.getNodeElement(ev.target).dataset.file));
     });
     
   }
