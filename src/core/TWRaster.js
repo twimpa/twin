@@ -24,6 +24,8 @@
 
 'use strict';
 
+import {FileInfo} from './nodes/io/FileInfo.js';
+
 export class TWRaster {
 
   /**
@@ -36,6 +38,46 @@ export class TWRaster {
     this.width = w;
     this.height = h;
     this.depth = d;
+  }
+  
+    /** 8-bit unsigned integer (0-255). */
+  static get GRAY8() {
+    return 0;
+  }
+  
+  /**  16-bit signed integer (-32768-32767). Imported signed images
+    are converted to unsigned by adding 32768. */
+  static get GRAY16_SIGNED() {
+    return 1;
+  }
+  
+  /** 16-bit unsigned integer (0-65535). */
+  static get GRAY16_UNSIGNED() {
+    return 2;
+  }
+  
+  /**  32-bit signed integer. Imported 32-bit integer images are
+    converted to floating-point. */
+  static get GRAY32_INT() {
+    return 3;
+  }
+  
+  /** 32-bit floating-point. */
+  static get GRAY32_FLOAT() {
+    return 4;
+  }
+
+  /** 1-bit unsigned integer (0 and 255). */
+  static get BITMAP() {
+    return 5;
+  }
+  /** 24-bit interleaved RGB. Import/export only. */
+  static get RGB() {
+    return 6;
+  }
+  
+  static get RGBA8() {
+    return 8;
   }
   
   preview(canvas) {
@@ -54,7 +96,16 @@ export class TWRaster {
     canvas.style.imageRendering = 'optimizespeed';
     let ctx = canvas.getContext('2d');
     let imgData = ctx.createImageData(this.width, this.height);
-    imgData.data.set(TWRaster.gray8ToRGBA(this.pixels) ); 
+    switch (this.type) {
+    case TWRaster.BITMAP:
+    case TWRaster.GRAY8:
+      imgData.data.set(TWRaster.gray8ToRGBA(this.pixels) ); 
+      break;
+    case TWRaster.RGBA8:
+      imgData.data.set(this.pixels);
+      break;
+    }
+    
     ctx.putImageData(imgData, 0, 0); 
   }
   
@@ -73,7 +124,7 @@ export class TWRaster {
   }
   
   static RGBToRGBA(values) {
-  
+    return values;
   }
   
 } // End of class TWRaster
