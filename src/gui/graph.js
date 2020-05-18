@@ -123,7 +123,8 @@ export class Graph {
     });
   }
 
-  getNode(id) {
+  getNode(node_id) {
+    return this.nodes.filter( n => n.id === node_id)[0];
   }
   
   getEdge(id) {

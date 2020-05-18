@@ -25,7 +25,7 @@
 'use strict';
 
 
-class TWImage {
+class TWImage extends TWRaster {
   constructor(element,x,y,w,h,preview=false) {
     this.x = x;
     this.y = y;

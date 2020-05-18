@@ -25,8 +25,10 @@
 'use strict';
 
 
-import {PNMDecoder} from './io/PNMDecoder.js'
-import {CSVDecoder} from './io/CSVDecoder.js'
+import {PNMDecoder} from './io/PNMDecoder.js';
+import {CSVDecoder} from './io/CSVDecoder.js';
+import {TWRaster} from '../TWRaster.js';
+
 
 /*
  * Load an image (jpg, png, gif)
@@ -64,33 +66,25 @@ export const load = async (node_id,args) => {
   /*
    * Loader of Web supported File Format: GIF, JPEG, PNG
    */
-  const loadRaster = (path) => {
-    return fetch(path)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.blob();
-    })
-    .then(a_blob => {
-      return new Promise( (resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.src = URL.createObjectURL(a_blob);
-      });
+  const loadRaster = (file) => {
+    return new Promise( (resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.src = URL.createObjectURL(file);
     })
     .then(img => {
       console.log('Load...');
       let w = img.naturalWidth;
       let h = img.naturalHeight;
+      console.log(w,h);
       // Create canvas
       let canvas = document.createElement('canvas');
       canvas.width = w;
       canvas.height = h;
       let ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
-      const pixels = ctx.getImageData(x, y, 1, 1).data;
-      return new TWRaster(pixels,w,h,1);
+      const pixels = ctx.getImageData(0,0,w,h).data;
+      return new TWRaster(pixels,TWRaster.RGBA8,w,h,1);
       // return canvas;
     })
     .catch((error) => {
@@ -123,12 +117,21 @@ export const load = async (node_id,args) => {
     }
     return canvas; // raster
   }
+  
   // Main
+  // Step #1: Find the input(s) or node variable.s
+  let arg_names = TWIN.graph.getNode(node_id).getArguments();
+  // `load` is a Producer ... no input
+  let filename = arg_names.find( a => a.includes('__AT__') );
+  let out = `raster__FROM__${node_id}`;
+  
+  // Step #2: Run
+  let raster = await loader(args[filename]);
 
-  let raster = await loader(args['open__AT__0']);
+  // Step #3: Update output(s)
   raster.preview(document.querySelector(`#node_${node_id} .preview`) || document.body);
-  console.log(raster.width,raster.height);
-  args.input = raster; // new TWImage(raster,0,0,canvas.width,canvas.height);
+  // console.log(raster.width,raster.height);
+  args[out] = raster; // new TWImage(raster,0,0,canvas.width,canvas.height);
   return args;
 }
 

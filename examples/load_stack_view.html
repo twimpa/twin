@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8">
+<title>TWIN - Load and View</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:700" rel="stylesheet"> 
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="../css/twin.css">
+<script type="text/javascript" src="../dist/twin.js"></script>
+
+</head>
+<body>
+<main>
+</main>
+
+<script type="text/javascript">
+  'use strict';
+
+  ////// MAIN //////
+
+  let main = document.querySelector('main');
+
+  TWIN.init();
+  
+  
+  fetch('../templates/nodes.json', {
+    method: 'GET',
+    headers: new Headers({'Content-Type': 'application/json'}),
+    mode: 'cors',
+    cache: 'default'
+
+  })
+  .then ( response => response.json() )
+  .catch ( error => {
+    alert(`Something went wrong - ${error}`)
+  })
+  .then ( nodeTemplates => {
+  
+    // Create Board + Graph
+    let board = new Board(main, nodeTemplates);
+
+
+    // Load Rec2D Graph
+    let test = {
+      nodes: [
+        {
+          id: 0,
+          template:2,
+          metadata: {
+            comment: "Open...",
+            pos: [507,224]
+          }
+        },
+        {
+          id: 3,
+          template:23,
+          metadata: {
+            comment: "toStack",
+            pos: [696,227],
+            nrows: 2,
+            ncols:2,
+            border: 0
+          }
+        },
+        {
+          id: 22,
+          template:11,
+          metadata: {
+            comment: "Viewer2D",
+            pos: [892,256],
+          }
+        }
+      ],
+      edges : [
+        {
+          eid: 1,
+          sockets: ['raster__FROM__0','raster2d__TO__3'],
+        },
+        {
+          eid: 2,
+          sockets: ['stack__FROM__3','raster2d__TO__22'],
+        }
+
+      ]
+    };
+
+    board.load(test);
+    board.run();
+  }); 
+
+</script>
+</body>
+</html>

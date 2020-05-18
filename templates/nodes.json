@@ -23,7 +23,7 @@
     "properties": [
       {"label": "Raster","output": "raster","name": "raster"},
       {"label": "Open","file": "File...","name": "open"},
-      {"canvas": "preview"}
+      {"canvas": "preview", "name": "preview"}
     ]
   },
   {

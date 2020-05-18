@@ -70,6 +70,12 @@ export class Node extends Draggable {
     return this.hasOutputs && !this.hasInputs;
   }
   
+  getArguments() {
+    return this.template.properties.map( p => {
+      const type = (p.input)  ? 'FROM' : ( (p.output) ? 'TO': 'AT');
+      return `${p.name}__${type}__${this.id}`;
+    });
+  }
   /*
    * @private
    * Create Node

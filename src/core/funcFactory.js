@@ -27,6 +27,7 @@
 import {Functions} from '../common.js';
 import {load} from './nodes/load.js';
 import {nrange} from './nodes/nrange.js';
+import {toStack} from './nodes/toStack.js';
 import {view2D} from './nodes/view2D.js';
 
 
@@ -74,7 +75,7 @@ export class FuncFactory {
     case Functions.TWIN_STATS: break;
     case Functions.TWIN_TEST_IMAGE: break;
     case Functions.TWIN_THRESHOLD: break;
-    case Functions.TWIN_TO_STACK: break;
+    case Functions.TWIN_TO_STACK: toStack; break;
     case Functions.TWIN_TRANSFORM: break;
     case Functions.TWIN_TYPE: break;
     case Functions.TWIN_VIEW_2D: return view2D; break;
