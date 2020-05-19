@@ -36,10 +36,10 @@ export class FuncFactory {
   static func(keyword) {
     // Check `keyword` exists. 
     let key = Object.keys(Functions).indexOf(keyword);
-    console.log(keyword,key);
     if (key !== -1) {
       key = Functions[keyword];
     }
+    console.log(keyword,key);
     switch(key) { 
     case Functions.TWIN_ADV_MM: break;
     case Functions.TWIN_FOLD: break;
@@ -75,7 +75,7 @@ export class FuncFactory {
     case Functions.TWIN_STATS: break;
     case Functions.TWIN_TEST_IMAGE: break;
     case Functions.TWIN_THRESHOLD: break;
-    case Functions.TWIN_TO_STACK: toStack; break;
+    case Functions.TWIN_TO_STACK: return toStack; break;
     case Functions.TWIN_TRANSFORM: break;
     case Functions.TWIN_TYPE: break;
     case Functions.TWIN_VIEW_2D: return view2D; break;

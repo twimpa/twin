@@ -73,6 +73,7 @@ export class WidgetFactory {
       case 'input': element = WidgetFactory.input_socket(id,row,metadata,action_func); break;
       case 'label': element = WidgetFactory.label(id,row,metadata,action_func); break;
       case 'numerical': element = WidgetFactory.numerical(id,row,metadata,action_func); break;
+      case 'preview': element = WidgetFactory.canvas(id,row,metadata,action_func); break;
       case 'readonly': element = WidgetFactory.readonly(id,row,metadata,action_func); break;
       case 'selectlayer': element = WidgetFactory.selectlayer(id,row,metadata,action_func); break;
       case 'select': element = WidgetFactory.select(id,row,metadata,action_func); break;
@@ -309,12 +310,18 @@ export class WidgetFactory {
     input.setAttribute('maxlength',40);
     // input.setAttribute('size',10);
     input.setAttribute('value',metadata[template_row.name] || template_row.numerical);
+    TWIN.args[input.id] = metadata[template_row.name] || template_row.numerical;
     input.addEventListener('input',(event)=> {
       let value = event.srcElement.value;
       event.srcElement.value = /^\d*\.?\d*$/.test(event.srcElement.value) ? value : value.slice(0,-1);
       return false;
     });
-    input.addEventListener('blur',(event) => console.info(`Add the ${event.srcElement.value} in queue`));
+    input.addEventListener('blur',(event) => {
+      console.info(`Add the ${event.srcElement.value} in queue`);
+      TWIN.args[input.id] = +event.srcElement.value;
+      // Update 
+      TWIN.graph.update(id); 
+    });
 
     // TODO Add event onchanged
     return input;

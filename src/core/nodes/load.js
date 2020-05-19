@@ -132,7 +132,8 @@ export const load = async (node_id,args) => {
   raster.preview(document.querySelector(`#node_${node_id} .preview`) || document.body);
   // console.log(raster.width,raster.height);
   args[out] = raster; // new TWImage(raster,0,0,canvas.width,canvas.height);
-  return args;
+  // Dispatch to other nodes according to edges
+  return TWIN.graph.dispatch(out,args);
 }
 
 /* 

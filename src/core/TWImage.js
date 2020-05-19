@@ -24,41 +24,14 @@
 
 'use strict';
 
+import {TWRaster} from './TWRaster.js';
 
-class TWImage extends TWRaster {
-  constructor(element,x,y,w,h,preview=false) {
+export class TWImage extends TWRaster {
+  constructor(raster,x,y,w,h) {
+    super(raster.pixels,raster.type,w,h,1);
+    
     this.x = x;
     this.y = y;
-    this.width = w;
-    this.height = h;
-    this.source = element;
-    this.type = 4; // RGBA
-    if (element.tagName === 'CANVAS') {
-      this.source = element;
-    }
-    else {
-      // Copy from <img> to <canvas>
-      this.source = document.createElement('canvas');
-      this.id = `${element.id}_cnvs`;
-      document.body.append(this.source);
-      this.source.style.display = 'none';
-      this.source.width = w;
-      this.source.height = h;
-      this.context = this.source.getContext('2d');
-      this.context.drawImage(element, 0, 0);
-
-    }
-    if (preview) {
-      this.canvas = document.createElement('canvas');
-      this.id = `${element.id}_cnvs`;
-      document.body.append(this.canvas);
-      this.canvas.style.display = 'none';
-      this.canvas.width = w;
-      this.canvas.height = h;
-      this.context = this.canvas.getContext('2d');
-      this.context.drawImage(element, 0, 0);
-    }
-
     this.rois = [];
     this.transforms = [];
   }
@@ -163,25 +136,7 @@ class TWImage extends TWRaster {
     return this;
   }
   
-  show(id) {
-    let canvas = document.createElement('canvas');
-    canvas.id = `show_${id}`;
-    document.body.append(canvas);
-    canvas.width = this.width;
-    canvas.height = this.height;
 
-    let ctx = canvas.getContext('2d');
-    let idata;
-    if (this.raw) {
-      idata = new ImageData(to_rgba(this.raw),this.width,this.height);
-    }
-    else {
-      let u8pixels = this.source.getContext('2d').getImageData(0,0,this.width,this.height).data;
-      idata = new ImageData(u8pixels,this.width,this.height);
-    }
-    ctx.putImageData(idata,0,0);
-    
-  }
 
 
 } // End of class TWImage

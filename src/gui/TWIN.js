@@ -42,7 +42,6 @@ export class TWIN {
     this.tx = 0;
     this.ty = 0;
     this.graph;
-    this.args = {};
   }
   
   

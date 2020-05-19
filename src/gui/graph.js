@@ -123,6 +123,16 @@ export class Graph {
     });
   }
 
+  /**
+   * Dispatch args 
+   *
+   * @author Jean-Christophe Taveau
+   */
+  dispatch(socket_id, args) {
+    let edges = this.edges.filter( e => e.source === socket_id || e.target === socket_id);
+    return this.pipeline.dispatch(edges, args);
+  }
+  
   getNode(node_id) {
     return this.nodes.filter( n => n.id === node_id)[0];
   }

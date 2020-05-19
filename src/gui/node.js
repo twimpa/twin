@@ -45,6 +45,8 @@ export class Node extends Draggable {
     this.template = template;
     this.element = document.createElement('section');
 
+    // Check if `node` requires a preview
+    this.preview = template.properties.some( p => p.preview !== undefined) || template.preview;
     this.hasLayers = template.properties.some( (p) => p.layer !== undefined);
     this.hasOutputs = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'output') || p.output !== undefined);
     this.hasInputs  = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'input')  || p.input !== undefined);
@@ -72,7 +74,7 @@ export class Node extends Draggable {
   
   getArguments() {
     return this.template.properties.map( p => {
-      const type = (p.input)  ? 'FROM' : ( (p.output) ? 'TO': 'AT');
+      const type = (p.input)  ? 'TO' : ( (p.output) ? 'FROM': 'AT');
       return `${p.name}__${type}__${this.id}`;
     });
   }
@@ -89,6 +91,7 @@ export class Node extends Draggable {
     nodeH.style.left = (metadata.pos) ? `${metadata.pos[0]}px`: `${Math.floor(Math.random() * 1000)}px`;
     nodeH.style.top  = (metadata.pos) ? `${metadata.pos[1]}px`: `${Math.floor(Math.random() * 600)}px`;
 
+   
     // Head
     let head = this.createHeader(template,id,metadata);
 

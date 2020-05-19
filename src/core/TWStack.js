@@ -1,4 +1,4 @@
-class TWStack {
+export class TWStack {
   constructor(slices) {
     this.slices = slices;
     this.current = -1;

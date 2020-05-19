@@ -218,6 +218,7 @@
       {"label": "nRows", "numerical": 1, "name": "nrows"},
       {"label": "nCols", "numerical": 1, "name": "ncols"},
       {"label": "Border", "numerical": 0, "name": "border"},
+      {"preview": false, "name": "preview"},
       {"label": "Raster","input": "raster", "name": "raster2d"}
     ]
   },

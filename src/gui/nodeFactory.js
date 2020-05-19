@@ -147,7 +147,8 @@ export class NodeFactory {
     let buttons = [
       {icon: 'binoculars', name: 'hamburger', title:'Inspect - Shortcut: I',fun: inspect_action},
       {icon: 'question-circle-o', name: 'hamburger', title:'Help - Shortcut: H',fun: help_action},
-      {icon: 'times-circle-o', name: 'hamburger', title:'Close - Shortcut: X',fun: close_action}
+      {icon: 'trash', name: 'hamburger', title:'Delete - Shortcut: X',fun: close_action}
+      // {icon: 'times-circle-o', name: 'hamburger', title:'Close - Shortcut: X',fun: close_action}
     ];
     let items = ( preview ? [...preview_buttons,...buttons] : buttons).map( b => item(b.icon,b.icon,b.title,b.fun,b));
     let ulist = document.createElement('ul');

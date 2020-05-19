@@ -33,5 +33,31 @@
  * @author Jean-Christophe Taveau.
  */
 export const view2D = async (node_id,args) => {
-  args.input.show(args.count);
+  // Step #1: Find the input(s) or node variable.s
+  let arg_names = TWIN.graph.getNode(node_id).getArguments();
+  const input = arg_names.find( a => a.includes(`raster2d__`) );
+  const backdrop = arg_names.find( a => a.includes('backdrop__') ) || false;
+
+  
+  // Step #2: Run if `input` available
+  if (input) {
+    let stack = _show(node_id,args[input], backdrop);
+  }
+  return args;
+}
+
+// Private
+const _show = (id,img,backdrop) => {
+/*
+  let canvas = document.querySelector('canvas');
+  canvas.id = `show_${id}`;
+  document.body.append(canvas);
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  let ctx = canvas.getContext('2d');
+  */
+  // let idata = new ImageData(to_rgba(img.pixels),img.width,img.height);
+  // ctx.putImageData(idata,0,0);
+  
 }

@@ -30,6 +30,8 @@ export class TWDataFlow {
 
   constructor(graph) {
     this.flow = [];
+    this.args = {};
+    TWIN.args = this.args; // Just for convenience
     this.lastProducer = -1;
     this.firstConsumer = 0;
   }
@@ -41,6 +43,7 @@ export class TWDataFlow {
    */
   add(node) {
     // Add function (core engine of the node)
+    console.log(node.template.name);
     node.engine = FuncFactory.func(node.template.name);
         
     if (node.isProducer()) {
@@ -52,11 +55,12 @@ export class TWDataFlow {
       this.flow.push(node);
     }
     else {
+      // TODO 
       // Producer AND Consumer - must be inserted between `lastProducer` and `firstConsumer`.
       let index = this.lastProducer;
       // Check inputs and outputs indexes
-
-      this.flow.splice(index,0,node);
+      console.log(this.lastProducer, this.firstConsumer);
+      this.flow.splice(index+1,0,node);
       this.firstConsumer++;
     }
   }
@@ -70,14 +74,40 @@ export class TWDataFlow {
   
   }
   
-  update(node_id) {
+  /**
+   * @author Jean-Christophe Taveau
+   */
+  async update(node_id) {
     // Get index in pipeline
     let index = this.flow.reduce( (accu,n,i) => (n.id === node_id) ? {node: n,index: i} : accu, {node: undefined, index: -1} ).index;
     console.log('INDEX',index);
     // Run node and following
-    this.flow.slice(index).forEach( n => n.engine(n.id,TWIN.args));
+    let args = this.args;
+    for (let i = index; i < this.flow.length; i++) {
+      const n = this.flow[i];
+      console.log(i,n.template.name);
+      args =  await n.engine(n.id,args);
+    }
+    this.args =  args;
   }
   
+  dispatch(edges, args) {
+    console.info('EDGES',edges);
+    edges.forEach( e => {
+      if (args[e.source]) {
+        args[e.target] = args[e.source];
+      }
+      else {
+        args[e.source] = args[e.target];
+      }
+    });
+    return args;
+  }
+  
+  /**
+   * Run the data flow
+   * @author Jean-Christophe Taveau
+   */
   async run(pipeline,root) {
     let result = root;
     for (const func of pipeline) {
