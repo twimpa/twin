@@ -24,6 +24,7 @@
 
 'use strict';
 
+import {NodeFactory} from './nodeFactory.js';
 import {Node} from './node.js';
 import {Edge} from './edge.js';
 import {TWDataFlow} from '../core/TWDataFlow.js';
@@ -96,8 +97,14 @@ export class Graph {
     let root = this.root;
     // Create Graph
     nodes.forEach( (node) => {
-
-      this.appendNode(node.template,node.id,node.metadata);
+      // Step #1: Get component
+      let component = NodeFactory.get(node.id);
+      // Step #2:  Update states
+      
+      // Step #3:  Create GUI
+      component.createMarkup();
+      this.appendNode(component);
+      // this.appendNode(NodeFactory.node.template,node.id,node.metadata);
       /*
       // Attach node to <root>
       console.log(node.template,node.id,node.metadata);

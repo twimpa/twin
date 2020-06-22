@@ -25,7 +25,7 @@
 'use strict';
 
 import {Draggable,dragStartNode,dragOverNode, dragEndNode,resizeStart,resizeMove, resizeEnd} from './draggable.js';
-import {NodeFactory} from './nodeFactory.js';
+import {NodeGUI} from './nodeGUI.js';
 import {WidgetFactory} from './widgetFactory.js';
 
 export class Node extends Draggable {
@@ -52,7 +52,7 @@ export class Node extends Draggable {
     this.hasInputs  = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'input')  || p.input !== undefined);
 
     // Create Widgets
-    this.createNode(id,template,metadata);
+    this.createMarkup(id,template,metadata);
     
   }
 
@@ -83,7 +83,7 @@ export class Node extends Draggable {
    * Create Node
    * @author Jean-Christophe Taveau
    */
-  createNode(id,template,metadata) {
+  createMarkup(id,template,metadata) {
 
     // Main
     let nodeH = this.element;
@@ -91,7 +91,6 @@ export class Node extends Draggable {
     nodeH.style.left = (metadata.pos) ? `${metadata.pos[0]}px`: `${Math.floor(Math.random() * 1000)}px`;
     nodeH.style.top  = (metadata.pos) ? `${metadata.pos[1]}px`: `${Math.floor(Math.random() * 600)}px`;
 
-   
     // Head
     let head = this.createHeader(template,id,metadata);
 
@@ -135,7 +134,7 @@ export class Node extends Draggable {
     
     const openTools = (preview) => (event) => {
       let nodeElement = WidgetFactory.getNodeElement(event.target);
-      NodeFactory.createHamburger(nodeElement,preview);
+      NodeGUI.createHamburger(nodeElement,preview);
     }
     
     // M A I N
@@ -200,7 +199,7 @@ export class Node extends Draggable {
     body.className = 'body';
     // Main content
 
-    NodeFactory.createContent( template.properties,body,this.id, metadata);
+    NodeGUI.createContent( template.properties,body,this.id, metadata);
 
     return body;
   }

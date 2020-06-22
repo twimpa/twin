@@ -24,150 +24,67 @@
 
 'use strict';
 
-import {Socket} from './socket.js';
-import {WidgetFactory} from './widgetFactory.js';
+import * as TWC from '../components/TWC.js';
+
 
 export class NodeFactory {
 
-  /**
-   * Create Content in Node's body
-   *
-   * @author Jean-Christophe Taveau
-   */
-  static createContent(template_rows,parent,id, metadata) {
-    let nodeid = id;
-    let outputs = 0;
-    let inputs = 0;
-    template_rows.forEach( (row,index) => {
-      if (row.layer !== undefined) {
-        let container = document.createElement('div');
-        container.className = 'layer';
-        container.id = `layer_${index}`;
-        NodeFactory.createRows(row.properties,container,nodeid);
-        parent.appendChild(container);
-        container.style.display = (index === 0) ? 'block': 'none';
+  static get(keyword) {
+    switch(keyword) {
+      case "TWIN_ADV_MM": break;
+      case "TWIN_AGGREGATE": break;
+      case "TWIN_BASIC_MM": break;
+      case "TWIN_DEBUG": break;
+      case "TWIN_DUPLICATE": break;
+      case "TWIN_ENDSELECT": break;
+      case "TWIN_FILL": break;
+      case "TWIN_FOLD": break;
+      case "TWIN_GET_STORAGE": break;
+      case "TWIN_GETTER": break;
+      case "TWIN_IFTHENELSE": break;
+      case "TWIN_IJ_SAMPLES": break;
+      case "TWIN_IMAGE_CALC": break;
+      case "TWIN_IMAGE_MATH": break;
+      case "TWIN_INFO": break;
+      case "TWIN_INSPECT": break;
+      case "TWIN_MATH_MACRO": break;
+      case "TWIN_MATHS": break;
+      case "TWIN_MATHS_ADV": break;
+      case "TWIN_MERGE_COLORS": break;
+      case "TWIN_MONTAGE": break;
+      case "TWIN_NEW": break;
+      case "TWIN_OPEN_RASTER": break;
+      case "TWIN_PROJECT": break;
+      case "TWIN_RANGE": break;
+      case "TWIN_RESIZE": break;
+      case "TWIN_ROI": break;
+      case "TWIN_ROTATE": break;
+      case "TWIN_SAVE_TIFF": break;
+      case "TWIN_SELECT_FUNC": break;
+      case "TWIN_SET_STORAGE": break;
+      case "TWIN_SETTER": break;
+      case "TWIN_SPLIT_COLORS": break;
+      case "TWIN_STATS": break;
+      case "TWIN_TAB_DATA": break;
+      case "TWIN_TEST_IMAGE": break;
+      case "TWIN_THRESHOLD": break;
+      case "TWIN_TO_STACK": return new TWC.ToStack();
+      case "TWIN_TRANSFORM": break;
+      case "TWIN_TYPE": break;
+      case "TWIN_VIDEO": break;
+      case "TWIN_VIEW_2D": break;
+      case "TWIN_VIEW_3D": break;
+      case "TWIN_VIEW_PLOT": break;
+      case "TWIN_VIEW_PLOT": break;
+      case "TWIN_VIEW_STACK": break;
+      case "TWIN_ZIP": break;
+      default: {
+        throw `ERR: Unknown Node ${keyword}`;
       }
-      else {
-        let container = WidgetFactory.createRow(nodeid,row,metadata,(e) => {});
-/*
-        if (row.output !== undefined) {
-          container.id = `o_${outputs++}`;
-          container.classList.add('output');
-        }
-        else if (row.input !== undefined) {
-          container.id = `i_${inputs++}`;
-          container.classList.add('input');
-        }
-*/
-        parent.appendChild(container);
-      }
-    });
-  }
-
-  static createRows(rows,parent,id) {
-    let nodeid = id;
-    let outputs = 0;
-    let inputs = 0;
-    rows.forEach( row => {
-      let container = NodeFactory.createRow(row,nodeid);
-      if (row.output !== undefined) {
-        container.id = `o_${outputs++}`;
-        // container.classList.add('output');
-      }
-      else if (row.input !== undefined) {
-        container.id = `i_${inputs++}`;
-        // container.classList.add('input');
-      }
-      parent.appendChild(container);
-    });
-  }
-
-
-
-
-  /**
-   * Create Hamburger Menu of Node
-   *
-   * @author Jean-Christophe Taveau
-   */
-  static createHamburger(parent,preview) {
-  
-        // Preview Action
-      const preview_action = (evt) => {
-        let eye = document.querySelector('.hamburger #hamburger__AT__eye');
-        let eye_shut = document.querySelector('.hamburger #hamburger__AT__eye-slash');
-        if (eye.style.display === 'none') {
-          eye.style.display = 'block';
-          eye_shut.style.display = 'none';
-        }
-        else {
-          eye.style.display = 'none';
-          eye_shut.style.display = 'block';
-        }
-      }
-      
-      // Inspect Action
-      const inspect_action = (evt) => {
-        let popup = document.getElementById('popup');
-        popup.className = 'modal';
-        popup.style.top = '0px';
-        popup.style.left = '0px';
-        popup.innerHTML = '<div class="modal-content"><span class="close">&times;</span><h1>Inspect</h1></div>';
-      }
-      // Help Action
-      const help_action = (evt) => {
-        let popup = document.getElementById('popup');
-        popup.className = 'modal';
-        popup.style.top = '0px';
-        popup.style.left = '0px';
-        popup.innerHTML = '<div class="modal-content"><span class="close">&times;</span><h1>Help</h1></div>';
-      }
-      // Close Action
-      const close_action = (evt) => {
-        console.info('Delete Node and Remove connected edges');
-      }
-      
-    const item = (id,icon,title,callback,template) => {
-      let item = document.createElement('li');
-      let b = WidgetFactory.button(id,template,{},callback);
-      b.classList.remove('button');
-      item.appendChild(b);
-      return item;
     }
-      
-    let menu = document.querySelector('#popup');
-    menu.className = 'hamburger';
-    menu.innerHTML = ''; // Reset
-    // Menu Events are already defined in `board.js`
-    // Define buttons in menu
-    let preview_buttons = [
-      {icon: 'eye', name: 'hamburger',title:'Preview - Shortcut: V',fun: preview_action},
-      {icon: 'eye-slash', name: 'hamburger',title:'Preview - Shortcut: V',fun: preview_action,display: 'none'}
-    ];
-    let buttons = [
-      {icon: 'binoculars', name: 'hamburger', title:'Inspect - Shortcut: I',fun: inspect_action},
-      {icon: 'question-circle-o', name: 'hamburger', title:'Help - Shortcut: H',fun: help_action},
-      {icon: 'trash', name: 'hamburger', title:'Delete - Shortcut: X',fun: close_action}
-      // {icon: 'times-circle-o', name: 'hamburger', title:'Close - Shortcut: X',fun: close_action}
-    ];
-    let items = ( preview ? [...preview_buttons,...buttons] : buttons).map( b => item(b.icon,b.icon,b.title,b.fun,b));
-    let ulist = document.createElement('ul');
-    ulist.append(...items);
-    menu.appendChild(ulist);
-    menu.style.left = `${parent.offsetLeft + parent.offsetWidth}px`; //`${event.clientX}px`;
-    menu.style.top = `${parent.offsetTop}px`; // `${event.clientY}px`;
-    menu.style.display = 'block';
   }
+  
 
-  static createInspector(nodeid) {
-    let nodeH = document.getElementById(nodeid);
-    // Inputs
-    let inputs = document.querySelectorAll(`#${nodeid} .input`);
-    // Properties
-    // let props = document.querySelectorAll(`#${nodeid} .widget`);
-    // Outputs
-    let outputs = document.querySelectorAll(`#${nodeid} .output`);
-  }
 } // End of class NodeFactory
 
 

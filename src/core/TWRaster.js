@@ -109,6 +109,16 @@ export class TWRaster {
     ctx.putImageData(imgData, 0, 0); 
   }
   
+  toString() {
+    const types = ['GRAY8','GRAY16_SIGNED','GRAY16_UNSIGNED','GRAY32_INT','GRAY32_FLOAT','BITMAP','RGB','RGBA8'];
+    
+    const px_txt = this.pixels.reduce((accu,px,i) => ( (i%this.width) === 0) ? `${accu}\n${px},` : `${accu}${px},`, '');
+    
+    return `type: ${types[this.type]}, width: ${this.width}, height: ${this.height}, depth: ${this.depth},
+pixels: ${this.pixels.constructor.name}[${px_txt}]`;
+  }
+  
+  
   /* Private */
   static gray8ToRGBA(values) {
     return Uint8ClampedArray.from( 

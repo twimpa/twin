@@ -383,51 +383,12 @@ export class WidgetFactory {
    */
   static text(id,row,metadata,action_func) {
 
-    let input = document.createElement('input');
-    input.className = "numerical";
+    let input = document.createElement('textArea');
+    input.className = "textarea";
     input.setAttribute("type", "text");
     input.setAttribute('name',row.name || 'unknown');
-    input.setAttribute('minlength',4);
-    input.setAttribute('maxlength',40);
-    //input.setAttribute('size',10);
-    input.setAttribute('value',value || row.text);
-    
-    // Create a `dummy` div to compute width
-    /*
-    let div = document.querySelector('#input-helper');
-    if (!div) {
-      div = document.createElement("div");
-      div.id = "input-helper";
-      document.body.appendChild(div);
-    }
+    input.setAttribute('readonly',true);
 
-    input.addEventListener("keyup", () => {
-        div.textContent = event.target.value;
-        console.info('keypup',event.target.value);
-        input.style.width = div.offsetWidth + 15 + "px";
-    });
-    */
-    /* 
-     CSS
-     
-      overflow: hidden;
-      text-overflow: ellipsis;
-      
-      input,
-      #input-helper {
-          display: inline;
-          font-size: 14px;
-          font-family: serif;
-          line-height: 16px;
-      }
-
-      #input-helper {
-          position: absolute;
-          top: -10000px;
-      }
-     */
-
-    // TODO Add event onchanged
     return input;
   }
 
