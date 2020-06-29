@@ -1,25 +1,62 @@
 /* Adapted from ImageJ TiffDecoder Java Class */
 
+class RandomAccessStream {
+  constructor(array_buffer) {
+    this.offset = 0;
+    this.buffer = array_buffer; // Uint8ClampedArray
+  }
+  
+  getLongFilePointer() {
+  
+  }
+  
+  /**
+   * @param {byte[]} bytes
+   * @param {int} off
+   * @param {int} len
+   */
+  read(bytes, off=0, len=1) {
+  
+  }
+  
+  readDouble() {
+  
+  }
+  
+  readFloat() {
+  
+  }
+  
+  readFloat() {
+  
+  }
+  
+  readInt() {
+  
+  }
+  
+  readShort() {
+  
+  }
+  
+  seek(offset) {
+    this.offset += offset;
+  }
+} // End of class RandomAccessStream
+
 /**
  * Decodes single and multi-image TIFF files. The LZW decompression
  * code was contributed by Curtis Rueden.
 */
 export class TiffDecoder {
 
-
   /**
    * @constructor
    */
-  constructor(String directory, String name) {
-
-    this.directory = "";
-    if (directory.length > 0 && !(directory.endsWith(File.separator) || directory.endsWith("/"))) {
-      this.directory += directory + "/";
-    }
-
-    this.name = name;
+  constructor(array_buffer) {
+    // this.name = name;
     this.url;
-    this.in; // RandomAccessStream
+    this.in = new RandomAccessStream(array_buffer); // RandomAccessStream
     this.debugMode;
     this.littleEndian;
     this.dInfo;
@@ -29,47 +66,60 @@ export class TiffDecoder {
     this.photoInterp;
   }
 
-  long OpenImageFileHeader() throws IOException {
-  // Open 8-byte Image File Header at start of file.
-  // Returns the offset in bytes to the first IFD or -1
-  // if this is not a valid tiff file.
-    let byteOrder = in.readShort();
-    if (byteOrder==0x4949) // "II"
-      littleEndian = true;
-    else if (byteOrder==0x4d4d) // "MM"
-      littleEndian = false;
+  /*
+   * Open 8-byte Image File Header at start of file.
+   * Returns the offset in bytes to the first IFD or -1
+   * if this is not a valid tiff file.
+   */
+  openImageFileHeader() throws IOException {
+
+    let byteOrder = this.in.readShort();
+    if (byteOrder === 0x4949) {
+      // "II" 
+      this.littleEndian = true;
+    }
+    else if (byteOrder === 0x4d4d) {
+      // "MM"
+      this.littleEndian = false;
+    }
     else {
-      in.close();
+      this.in.close();
       return -1;
     }
-    let magicNumber = getShort(); // 42
-    long offset = ((long)getInt())&0xffffffffL;
+    let magicNumber = TiffUtil.getShort(); // 42
+    let offset = (this.in.getInt())&0xffffffffL;
     return offset;
   }
-    
-  let getValue(let fieldType, let count) throws IOException {
+
+  /*
+   *
+   */
+  getValue(let fieldType, let count) throws IOException {
     let value = 0;
     let unused;
     if (fieldType == TIFF.SHORT && count==1) {
-      value = getShort();
-      unused = getShort();
+      value = TiffUtil.getShort();
+      unused = TiffUtil.getShort();
     } else
       value = getInt();
     return value;
   }  
   
-  void getColorMap(long offset, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getColorMap(long offset, FileInfo fi) throws IOException {
     byte[] colorTable16 = new byte[768*2];
-    long saveLoc = in.getLongFilePointer();
-    in.seek(offset);
-    in.readFully(colorTable16);
-    in.seek(saveLoc);
+    long saveLoc = this.in.getLongFilePointer();
+    this.in.seek(offset);
+    this.in.readFully(colorTable16);
+    this.in.seek(saveLoc);
     fi.lutSize = 256;
     fi.reds = new byte[256];
     fi.greens = new byte[256];
     fi.blues = new byte[256];
     let j = 0;
-    if (littleEndian) j++;
+    if (this.littleEndian) j++;
     let sum = 0;
     for (let i=0; i<256; i++) {
       fi.reds[i] = colorTable16[j];
@@ -84,66 +134,85 @@ export class TiffDecoder {
       fi.fileType = FileInfo.COLOR8;
   }
   
-  byte[] getString(let count, long offset) throws IOException {
+  /*
+   *
+   */
+   byte[] getString(let count, long offset) throws IOException {
     count--; // skip null byte at end of string
     if (count<=3)
       return null;
     byte[] bytes = new byte[count];
-    long saveLoc = in.getLongFilePointer();
-    in.seek(offset);
-    in.readFully(bytes);
-    in.seek(saveLoc);
+    long saveLoc = this.in.getLongFilePointer();
+    this.in.seek(offset);
+    this.in.readFully(bytes);
+    this.in.seek(saveLoc);
     return bytes;
   }
 
-  /** Save the image description in the specified FileInfo. ImageJ
-    saves spatial and density calibration data in this string. For
-    stacks, it also saves the number of images to avoid having to
-    decode an IFD for each image. */
-  void saveImageDescription(byte[] description, FileInfo fi) {
-        String id = new String(description);
-        boolean createdByImageJ = id.startsWith("ImageJ");
-        if (!createdByImageJ)
-      saveMetadata(getName(IMAGE_DESCRIPTION), id);
-    if (id.length<7) return;
+  /** 
+   * Save the image description in the specified FileInfo. ImageJ
+   * saves spatial and density calibration data in this string. For
+   * stacks, it also saves the number of images having to
+   * decode an IFD for each image. 
+   */
+  saveImageDescription(byte[] description, FileInfo fi) {
+    let id = new String(description);
+    let createdByImageJ = id.startsWith("ImageJ");
+    if (!createdByImageJ) {
+      this.saveMetadata(getName(IMAGE_DESCRIPTION), id);
+    }
+
+    if (id.length < 7) return;
     fi.description = id;
-        let index1 = id.indexOf("images=");
-        if (index1>0 && createdByImageJ && id.charAt(7)!='\n') {
-            let index2 = id.indexOf("\n", index1);
-            if (index2>0) {
-                String images = id.substring(index1+7,index2);
-                let n = (int)Tools.parseDouble(images, 0.0);
-                if (n>1 && fi.compression==FileInfo.COMPRESSION_NONE)
-                  fi.nImages = n;
-            }
+    let index1 = id.indexOf("images=");
+    if (index1>0 && createdByImageJ && id.charAt(7)!='\n') {
+      let index2 = id.indexOf("\n", index1);
+      if (index2>0) {
+        let images = id.substring(index1+7,index2);
+        let n = Tools.parseDouble(images, 0.0);
+        if (n>1 && fi.compression === FileInfo.COMPRESSION_NONE) {
+          fi.nImages = n;
         }
+      }
+    }
   }
 
-  void saveMetadata(String name, String data) {
-    if (data==null) return;
-        String str = name+": "+data+"\n";
-        if (tiffMetadata==null)
-          tiffMetadata = str;
-        else
-          tiffMetadata += str;
+  /*
+   * @param {string} name
+   * @param {string} data
+   */
+  saveMetadata(name, data) {
+    if (data==null) {
+      return;
+    }
+    String str = name+": "+data+"\n";
+    if (this.tiffMetadata==null) {
+      this.tiffMetadata = str;
+    }
+    else {
+      this.tiffMetadata += str;
+    }
   }
 
-  void decodeNIHImageHeader(let offset, FileInfo fi) throws IOException {
-    long saveLoc = in.getLongFilePointer();
+  /*
+   *
+   */
+  decodeNIHImageHeader(let offset, FileInfo fi) throws IOException {
+    long saveLoc = this.in.getLongFilePointer();
     
-    in.seek(offset+12);
-    let version = in.readShort();
+    this.in.seek(offset+12);
+    let version = this.in.readShort();
     
-    in.seek(offset+160);
-    double scale = in.readDouble();
+    this.in.seek(offset+160);
+    double scale = this.in.readDouble();
     if (version>106 && scale!=0.0) {
       fi.pixelWidth = 1.0/scale;
       fi.pixelHeight = fi.pixelWidth;
     } 
 
     // spatial calibration
-    in.seek(offset+172);
-    let units = in.readShort();
+    this.in.seek(offset+172);
+    let units = this.in.readShort();
     if (version<=153) units += 5;
     switch (units) {
       case 5: fi.unit = "nanometer"; break;
@@ -158,10 +227,10 @@ export class TiffDecoder {
     }
 
     // density calibration
-    in.seek(offset+182);
-    let fitType = in.read();
-    let unused = in.read();
-    let nCoefficients = in.readShort();
+    this.in.seek(offset+182);
+    let fitType = this.in.read();
+    let unused = this.in.read();
+    let nCoefficients = this.in.readShort();
     if (fitType==11) {
       fi.calibrationFunction = 21; //Calibration.UNCALIBRATED_OD
       fi.valueUnit = "U. OD";
@@ -178,44 +247,53 @@ export class TiffDecoder {
       }
       fi.coefficients = new double[nCoefficients];
       for (let i=0; i<nCoefficients; i++) {
-        fi.coefficients[i] = in.readDouble();
+        fi.coefficients[i] = this.in.readDouble();
       }
-      in.seek(offset+234);
-      let size = in.read();
+      this.in.seek(offset+234);
+      let size = this.in.read();
       StringBuffer sb = new StringBuffer();
       if (size>=1 && size<=16) {
         for (let i=0; i<size; i++)
-          sb.append((char)(in.read()));
+          sb.append((char)(this.in.read()));
         fi.valueUnit = new String(sb);
       } else
         fi.valueUnit = " ";
     }
       
-    in.seek(offset+260);
-    let nImages = in.readShort();
+    this.in.seek(offset+260);
+    let nImages = this.in.readShort();
     if (nImages>=2 && (fi.fileType==FileInfo.GRAY8||fi.fileType==FileInfo.COLOR8)) {
       fi.nImages = nImages;
-      fi.pixelDepth = in.readFloat();  //SliceSpacing
-      let skip = in.readShort();    //CurrentSlice
-      fi.frameInterval = in.readFloat();
+      fi.pixelDepth = this.in.readFloat();  //SliceSpacing
+      let skip = this.in.readShort();    //CurrentSlice
+      fi.frameInterval = this.in.readFloat();
     }
       
-    in.seek(offset+272);
-    float aspectRatio = in.readFloat();
+    this.in.seek(offset+272);
+    float aspectRatio = this.in.readFloat();
     if (version>140 && aspectRatio!=0.0)
       fi.pixelHeight = fi.pixelWidth/aspectRatio;
     
-    in.seek(saveLoc);
+    this.in.seek(saveLoc);
   }
-  
-  void dumpTag(let tag, let count, let value, FileInfo fi) {
+
+  /*
+   * @param {int} tag
+   * @param {int} count
+   * @param {int} value
+   * @param {FileInfo} fi
+   */
+  dumpTag( tag, count, value, fi) {
     long lvalue = ((long)value)&0xffffffffL;
-    String name = getName(tag);
-    String cs = (count==1)?"":", count=" + count;
-    dInfo += "    " + tag + ", \"" + name + "\", value=" + lvalue + cs + "\n";
+    let name = getName(tag); // String
+    let cs = (count==1)?"":", count=" + count; // String
+    this.dInfo += "    " + tag + ", \"" + name + "\", value=" + lvalue + cs + "\n";
     //ij.IJ.log(tag + ", \"" + name + "\", value=" + value + cs + "\n");
   }
 
+  /*
+   *
+   */
   getName(tag) {
     let name;
     switch (tag) {
@@ -251,22 +329,28 @@ export class TiffDecoder {
     return name;
   }
 
-  double getRational(long loc) throws IOException {
-    long saveLoc = in.getLongFilePointer();
-    in.seek(loc);
-    double numerator = getUnsignedInt();
-    double denominator = getUnsignedInt();
-    in.seek(saveLoc);
+  /*
+   * @returns {double}
+   */
+  getRational(long loc) throws IOException {
+    long saveLoc = this.in.getLongFilePointer();
+    this.in.seek(loc);
+    let numerator = TiffUtil.getUnsignedInt();
+    let denominator = TiffUtil.getUnsignedInt();
+    this.in.seek(saveLoc);
     if (denominator!=0.0)
       return numerator/denominator;
     else
       return 0.0;
   }
-  
-  FileInfo OpenIFD() throws IOException {
+
+  /*
+   * @returns {FileInfo}
+   */
+   openIFD() throws IOException {
   // Get Image File Directory data
     let tag, fieldType, count, value;
-    let nEntries = getShort();
+    let nEntries = TiffUtil.TiffUtil.getShort();
     if (nEntries<1 || nEntries>1000)
       return null;
     ifdCount++;
@@ -276,15 +360,15 @@ export class TiffDecoder {
     fi.fileType = FileInfo.BITMAP;  //BitsPerSample defaults to 1
     for (let i=0; i<nEntries; i++) {
       tag = getShort();
-      fieldType = getShort();
-      count = getInt();
-      value = getValue(fieldType, count);
+      fieldType = TiffUtil.getShort();
+      count = TiffUtil.getInt();
+      value = TiffUtil.getValue(fieldType, count);
       long lvalue = ((long)value)&0xffffffffL;
       if (debugMode && ifdCount<10) dumpTag(tag, count, value, fi);
       switch (tag) {
         case TIFF.IMAGE_WIDTH: 
           fi.width = value;
-          fi.intelByteOrder = littleEndian;
+          fi.intelByteOrder = this.littleEndian;
           break;
         case TIFF.IMAGE_LENGTH: 
           fi.height = value;
@@ -293,12 +377,12 @@ export class TiffDecoder {
           if (count==1)
             fi.stripOffsets = new int[] {value};
           else {
-            long saveLoc = in.getLongFilePointer();
-            in.seek(lvalue);
+            long saveLoc = this.in.getLongFilePointer();
+            this.in.seek(lvalue);
             fi.stripOffsets = new int[count];
             for (let c=0; c<count; c++)
               fi.stripOffsets[c] = getInt();
-            in.seek(saveLoc);
+            this.in.seek(saveLoc);
           }
           fi.offset = count>0?fi.stripOffsets[0]:value;
           if (count>1 && (((long)fi.stripOffsets[count-1])&0xffffffffL)<(((long)fi.stripOffsets[0])&0xffffffffL))
@@ -308,16 +392,16 @@ export class TiffDecoder {
           if (count==1)
             fi.stripLengths = new int[] {value};
           else {
-            long saveLoc = in.getLongFilePointer();
-            in.seek(lvalue);
+            long saveLoc = this.in.getLongFilePointer();
+            this.in.seek(lvalue);
             fi.stripLengths = new int[count];
             for (let c=0; c<count; c++) {
               if (fieldType==SHORT)
-                fi.stripLengths[c] = getShort();
+                fi.stripLengths[c] = TiffUtil.getShort();
               else
-                fi.stripLengths[c] = getInt();
+                fi.stripLengths[c] = TiffUtil.getInt();
             }
-            in.seek(saveLoc);
+            this.in.seek(saveLoc);
           }
           break;
          case TIFF.PHOTO_INTERP:
@@ -339,16 +423,16 @@ export class TiffDecoder {
               else
                 error("Unsupported BitsPerSample: " + value);
             } else if (count>1) {
-              long saveLoc = in.getLongFilePointer();
-              in.seek(lvalue);
-              let bitDepth = getShort();
+              long saveLoc = this.in.getLongFilePointer();
+              this.in.seek(lvalue);
+              let bitDepth = TiffUtil.getShort();
               if (bitDepth==8)
                 fi.fileType = FileInfo.GRAY8;
               else if (bitDepth==16)
                 fi.fileType = FileInfo.GRAY16_UNSIGNED;
               else
                 error("ImageJ cannot open interleaved "+bitDepth+"-bit images.");
-              in.seek(saveLoc);
+              this.in.seek(saveLoc);
             }
             break;
         case TIFF.SAMPLES_PER_PIXEL:
@@ -472,12 +556,12 @@ export class TiffDecoder {
             decodeNIHImageHeader(value, fi);
           break;
          case TIFF.META_DATA_BYTE_COUNTS: 
-          long saveLoc = in.getLongFilePointer();
-          in.seek(lvalue);
+          long saveLoc = this.in.getLongFilePointer();
+          this.in.seek(lvalue);
           metaDataCounts = new int[count];
           for (let c=0; c<count; c++)
             metaDataCounts[c] = getInt();
-          in.seek(saveLoc);
+          this.in.seek(saveLoc);
           break;
          case TIFF.META_DATA: 
            getMetaData(value, fi);
@@ -495,24 +579,27 @@ export class TiffDecoder {
     return fi;
   }
 
-  void getMetaData(let loc, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getMetaData(let loc, FileInfo fi) throws IOException {
     if (metaDataCounts==null || metaDataCounts.length==0)
       return;
     let maxTypes = 10;
-    long saveLoc = in.getLongFilePointer();
-    in.seek(loc);
+    long saveLoc = this.in.getLongFilePointer();
+    this.in.seek(loc);
     let n = metaDataCounts.length;
     let hdrSize = metaDataCounts[0];
     if (hdrSize<12 || hdrSize>804)
-      {in.seek(saveLoc); return;}
+      {this.in.seek(saveLoc); return;}
     let magicNumber = getInt();
     if (magicNumber!=MAGIC_NUMBER)  // "IJIJ"
-      {in.seek(saveLoc); return;}
+      {this.in.seek(saveLoc); return;}
     let nTypes = (hdrSize-4)/8;
     int[] types = new int[nTypes];
     int[] counts = new int[nTypes];
     
-    if (debugMode) dInfo += "Metadata:\n";
+    if (debugMode) this.dInfo += "Metadata:\n";
     let extraMetaDataEntries = 0;
     for (let i=0; i<nTypes; i++) {
       types[i] = getInt();
@@ -528,7 +615,7 @@ export class TiffDecoder {
         if (types[i]==PLOT) id = " (plot)";
         if (types[i]==ROI) id = " (roi)";
         if (types[i]==OVERLAY) id = " (overlay)";
-        dInfo += "   "+i+" "+Integer.toHexString(types[i])+" "+counts[i]+id+"\n";
+        this.dInfo += "   "+i+" "+Integer.toHexString(types[i])+" "+counts[i]+id+"\n";
       }
     }
     fi.metaDataTypes = new int[extraMetaDataEntries];
@@ -554,7 +641,7 @@ export class TiffDecoder {
         for (let j=start; j<start+counts[i]; j++) { 
           let len = metaDataCounts[j]; 
           fi.metaData[eMDindex] = new byte[len]; 
-          in.readFully(fi.metaData[eMDindex], len); 
+          this.in.readFully(fi.metaData[eMDindex], len); 
           fi.metaDataTypes[eMDindex] = types[i]; 
           eMDindex++; 
         } 
@@ -562,16 +649,19 @@ export class TiffDecoder {
         skipUnknownType(start, start+counts[i]-1);
       start += counts[i];
     }
-    in.seek(saveLoc);
+    this.in.seek(saveLoc);
   }
 
-  void getInfoProperty(let first, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getInfoProperty(let first, FileInfo fi) throws IOException {
     let len = metaDataCounts[first];
       byte[] buffer = new byte[len];
-    in.readFully(buffer, len);
+    this.in.readFully(buffer, len);
     len /= 2;
     char[] chars = new char[len];
-    if (littleEndian) {
+    if (this.littleEndian) {
       for (let j=0, k=0; j<len; j++)
         chars[j] = (char)(buffer[k++]&255 + ((buffer[k++]&255)<<8));
     } else {
@@ -581,7 +671,10 @@ export class TiffDecoder {
     fi.info = new String(chars);
   }
 
-  void getSliceLabels(let first, let last, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getSliceLabels(let first, let last, FileInfo fi) throws IOException {
     fi.sliceLabels = new String[last-first+1];
       let index = 0;
       byte[] buffer = new byte[metaDataCounts[first]];
@@ -590,10 +683,10 @@ export class TiffDecoder {
       if (len>0) {
         if (len>buffer.length)
           buffer = new byte[len];
-        in.readFully(buffer, len);
+        this.in.readFully(buffer, len);
         len /= 2;
         char[] chars = new char[len];
-        if (littleEndian) {
+        if (this.littleEndian) {
           for (let j=0, k=0; j<len; j++)
             chars[j] = (char)(buffer[k++]&255 + ((buffer[k++]&255)<<8));
         } else {
@@ -607,102 +700,133 @@ export class TiffDecoder {
     }
   }
 
-  void getDisplayRanges(let first, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getDisplayRanges(let first, FileInfo fi) throws IOException {
     let n = metaDataCounts[first]/8;
     fi.displayRanges = new double[n];
     for (let i=0; i<n; i++)
       fi.displayRanges[i] = readDouble();
   }
 
-  void getLuts(let first, let last, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getLuts(let first, let last, FileInfo fi) throws IOException {
     fi.channelLuts = new byte[last-first+1][];
-      let index = 0;
+    let index = 0;
     for (let i=first; i<=last; i++) {
       let len = metaDataCounts[i];
       fi.channelLuts[index] = new byte[len];
-            in.readFully(fi.channelLuts[index], len);
-            index++;
+      this.in.readFully(fi.channelLuts[index], len);
+      index++;
     }
   }
 
-  void getRoi(let first, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getRoi(let first, FileInfo fi) throws IOException {
     let len = metaDataCounts[first];
     fi.roi = new byte[len]; 
-    in.readFully(fi.roi, len); 
+    this.in.readFully(fi.roi, len); 
   }
 
-  void getPlot(let first, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getPlot(let first, FileInfo fi) throws IOException {
     let len = metaDataCounts[first];
     fi.plot = new byte[len];
-    in.readFully(fi.plot, len);
+    this.in.readFully(fi.plot, len);
   }
 
-  void getOverlay(let first, let last, FileInfo fi) throws IOException {
+  /*
+   *
+   */
+  getOverlay(let first, let last, FileInfo fi) throws IOException {
     fi.overlay = new byte[last-first+1][];
       let index = 0;
     for (let i=first; i<=last; i++) {
       let len = metaDataCounts[i];
       fi.overlay[index] = new byte[len];
-            in.readFully(fi.overlay[index], len);
+            this.in.readFully(fi.overlay[index], len);
             index++;
     }
   }
 
-  void error(String message) throws IOException {
-    if (in!=null) in.close();
+  /*
+   *
+   */
+  error(String message) throws IOException {
+    if (in!=null) {
+      this.in.close();
+    }
     throw new IOException(message);
   }
-  
-  void skipUnknownType(let first, let last) throws IOException {
-      byte[] buffer = new byte[metaDataCounts[first]];
+
+  /*
+   * @param {int} first
+   * @param {int} last
+   */
+  skipUnknownType( first, last) throws IOException {
+    let buffer = new byte[metaDataCounts[first]]; // byte[]
     for (let i=first; i<=last; i++) {
       let len = metaDataCounts[i];
-            if (len>buffer.length)
-                buffer = new byte[len];
-            in.readFully(buffer, len);
+      if (len>buffer.length) {
+        buffer = new byte[len];
+      }
+      this.in.readFully(buffer, len);
     }
   }
 
-  void enableDebugging() {
+  /*
+   *
+   */
+  enableDebugging() {
     debugMode = true;
   }
-    
-  FileInfo[] getTiffInfo() throws IOException {
+
+  /*
+   * @returns {FileInfo[]}
+   */
+  getTiffInfo() throws IOException {
     long ifdOffset;
     ArrayList list = new ArrayList();
     if (in==null)
       in = new RandomAccessStream(new RandomAccessFile(new File(directory+name), "r"));
-    ifdOffset = OpenImageFileHeader();
+    ifdOffset = this.openImageFileHeader();
     if (ifdOffset<0L) {
-      in.close();
+      this.in.close();
       return null;
     }
-    if (debugMode) dInfo = "\n  " + name + ": opening\n";
+    if (debugMode) this.dInfo = "\n  " + name + ": opening\n";
     while (ifdOffset>0L) {
-      in.seek(ifdOffset);
-      FileInfo fi = OpenIFD();
+      this.in.seek(ifdOffset);
+      FileInfo fi = this.openIFD();
       if (fi!=null) {
         list.add(fi);
         ifdOffset = ((long)getInt())&0xffffffffL;
       } else
         ifdOffset = 0L;
-      if (debugMode && ifdCount<10) dInfo += "  nextIFD=" + ifdOffset + "\n";
+      if (debugMode && ifdCount<10) this.dInfo += "  nextIFD=" + ifdOffset + "\n";
       if (fi!=null && fi.nImages>1)
         ifdOffset = 0L;   // ignore extra IFDs in ImageJ and NIH Image stacks
     }
     if (list.size()==0) {
-      in.close();
+      this.in.close();
       return null;
     } else {
-      FileInfo[] info = (FileInfo[])list.toArray(new FileInfo[list.size()]);
-      if (debugMode) info[0].debugInfo = dInfo;
+      FileInfo[] info = (FileInfo[]) list.toArray(new FileInfo[list.size()]);
+      if (debugMode) info[0].debugInfo = this.dInfo;
       if (url!=null) {
-        in.seek(0);
+        this.in.seek(0);
         info[0].inputStream = in;
       } else
-        in.close();
+        this.in.close();
       if (info[0].info==null)
-        info[0].info = tiffMetadata;
+        info[0].info = this.tiffMetadata;
       FileInfo fi = info[0];
       if (fi.fileType==FileInfo.GRAY16_UNSIGNED && fi.description==null)
         fi.lutSize = 0; // ignore troublesome non-ImageJ 16-bit LUTs
@@ -716,8 +840,12 @@ export class TiffDecoder {
       return info;
     }
   }
-  
-  String getGapInfo(FileInfo[] fi) {
+
+  /*
+   * @param {FileInfo[]} fi
+   * @returns {string}
+   */
+  getGapInfo(fi) {
     if (fi.length<2) return "0";
     long minGap = Long.MAX_VALUE;
     long maxGap = -Long.MAX_VALUE;

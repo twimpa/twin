@@ -44,7 +44,7 @@ export class WidgetFactory {
    */
   static createRow(node_id, template_row, metadata, callback) {
     // Extract widget type
-    let cells = Object.keys(template_row).filter( prop => ['name','source','zip'].indexOf(prop) === -1);
+    let widgets = Object.keys(template_row).filter( prop => ['label','widget'].indexOf(prop) !== -1);
     let numcolumns = cells.filter( type => ['collapsible','input','output','source','name','zip'].indexOf(type) === -1).length;
     let container = document.createElement('div');
     container.className = `row-${numcolumns}`;

@@ -26,12 +26,13 @@
 
 import {TWImage} from '../core/TWImage.js';
 import {TWStack} from '../core/TWStack.js';
+import {Observer} from '../core/Observer';
 
 /*
  * Convert a 2D raster/image into a stack
  *
  */
-export class ToStack extends Observer {
+export default class ToStack extends Observer {
   /**
    * @constructor
    */

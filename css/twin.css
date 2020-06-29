@@ -600,7 +600,7 @@ a.button,label.button {
   color: #555;
   width: 90%;
   border: solid 1px #ccc;
-  border-radius: 10px;
+  border-radius: 4px;
   padding-left: 4px;
   text-decoration: none;
   text-align:center;
@@ -684,6 +684,9 @@ input[type="number"] {
 }
 */
 
+textarea {
+  font-size: 10px;
+}
 
 .input button  {
   display: inline-block;

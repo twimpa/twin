@@ -143,11 +143,10 @@
     "help": ["Histogram"],
     "preview": true,
     "properties": [
-      {"label": "Bins","numerical": "auto"},
-      {"label": "Min","numerical":  "auto"},
-      {"label": "Max","numerical":  "auto"},
-      {"label": "Backdrop", "checkbox": false},
-      {"label": "Raster", "input": "raster"}
+      {"label": "Bins","numerical": "auto", "name": "bins"},
+      {"label": "Min","numerical":  "auto", "name": "min"},
+      {"label": "Max","numerical":  "auto", "name": "max"},
+      {"label": "Raster", "input": "raster", "name": "raster"}
     ]
   },
   {
@@ -497,10 +496,34 @@
     ]
   },
   {
+    "id": 53,
+    "class": "information",
+    "description": "Monitor",
+    "name": "TWIN_MONITOR",
+    "help": ["Look at data through the pipeline. Network tap https://en.wikipedia.org/wiki/Network_tap"],
+    "properties": [
+      {"label": "Data", "output": "metadata","name":"out_data"},
+      {"label": "Data", "input": "metadata","name": "in_data"},
+      {"text": "null","name": "log"}
+    ]
+  },
+  {
     "id": 60,
+    "class": "programming",
+    "description": "Number",
+    "help": "Numeric node",
+    "tags": ["programming","variable","number", "set"],
+    "properties": [
+        {"label": "Number", "widget": "output", "type": "number", "name": "output:number"},
+        {"label": "Value", "widget": "numerical", "state": 0,"name": "value:number"}
+    ]
+  },
+  {
+    "id": 61,
     "class": "programming",
     "description": "Variable",
     "help": "Numeric node",
+    "tags": ["programming","variable","number", "set"],
     "properties": [
       {"layer": "None", "type": "content","properties": []},
       {"layer": "Number", "type": "content", "properties": [
@@ -728,6 +751,18 @@
     "name": "TWIN_ZIP",
     "description": "Zip",
     "help": "Zip (interleave) two datasets of same lengths",
+    "properties": [
+      {"label": "Data", "output": "data"},
+      {"label": "#1","input": "var1"},
+      {"label": "#2","input": "var2"}
+    ]
+  },
+  {
+    "id": 85,
+    "class": "programming",
+    "name": "TWIN_EVAL",
+    "description": "Evaluate",
+    "help": "JavaScript code Evaluator",
     "properties": [
       {"label": "Data", "output": "data"},
       {"label": "#1","input": "var1"},

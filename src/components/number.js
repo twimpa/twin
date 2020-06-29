@@ -60,12 +60,13 @@ export const number = async (node_id,states) => {
 */
 
 
-export class NumberComponent extends Observer {
+export default class NumberComponent extends Observer {
 
   /**
    * @constructor
    */
   constructor() {
+    super();
     this.state = {
       value: 0
     }
@@ -74,20 +75,19 @@ export class NumberComponent extends Observer {
   /**
    * Create Node GUI
    */
-  createMarkup(node_id,state) {
+  createMarkup(node_id,metadata) {
     const template_ui =  {
       "id": "TWIN_NUMBER",
-      "category": "programming",
+      "class": "programming",
       "description": "Number",
       "help": "Numeric node",
       "tags": ["programming","variable","number", "set"],
       "properties": [
-        {"label": "Number", "widget": "output", "name": "value:number"},
-        {"label": "Value", "widget": "numerical", "state": 0,"name": "num:number"}
+        {"label": "Value", "widget": "numerical,output", "state": 0,"name": "value:number"}
       ]
     }
   
-    this.node = new Node(node_id,template_ui,state);
+    this.node = new Node(node_id,template_ui,metadata);
   }
 
   /**
@@ -102,3 +102,4 @@ export class NumberComponent extends Observer {
   }
   
 } // End of `NumberComponent
+

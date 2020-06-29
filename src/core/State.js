@@ -24,17 +24,26 @@
 
 'use strict';
 
-/*
- * Tiny Web Components: GUI Node + Engine 
- */
-import Loader from './loader.js';
-import Monitor from './monitor.js';
-import NumberComponent from './number.js';
-import ToStack from './toStack.js';
+import {Subject} from "./Subject";
 
-export {
-  Loader,
-  Monitor,
-  NumberComponent,
-  ToStack
-}
+export class State extends Subject {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  // Update the state.
+  // Calls the update method on each observer.
+  update(data = {}) {
+    // Merge...data with state
+    this.state = Object.assign(this.state, data);
+    this.notify(this.state);
+  }
+
+  // Get the state.
+  get() {
+    return this.state;
+  }
+  
+} // End of class State
+

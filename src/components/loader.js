@@ -28,19 +28,47 @@
 import {PNMDecoder} from './io/PNMDecoder.js';
 import {CSVDecoder} from './io/CSVDecoder.js';
 import {TWRaster} from '../core/TWRaster.js';
-
+import {Node} from '../gui/node';
+import {Observer} from '../core/Observer';
 
 /*
  * Load an image (jpg, png, gif)
  *
  */
-export class Loader extends Observer {
+export default class Loader extends Observer {
   
   constructor() {
-  
+    super();
+    this.state = {};
   }
   
 
+  /**
+   * Create Node GUI
+   */
+  createMarkup(node_id,metadata) {
+    const template_ui = {
+      "id": "TWIN_OPEN_RASTER",
+      "class": "loader",
+      "description": "Image...",
+      "rows": [
+        [
+          {"widget": "label","title": "Raster"}, 
+          {"widget":"output","name": "raster:raster"}
+        ],
+        [
+          {"widget": "label", "title": "Open"},
+          {"widget": "file", "title": "File...","name": "open:file"}
+        ],
+        [
+          {"widget": "canvas", "name": "preview:canvas"}
+        ]
+      ]
+    };
+  
+    this.node = new Node(node_id,template_ui,metadata);
+  }
+  
   
   async run(state) {
     // Step #1: Find the input(s) or node variable.s
@@ -50,7 +78,7 @@ export class Loader extends Observer {
     let out = `raster__FROM__${node_id}`;
     
     // Step #2: Run
-    let raster = await loader(args[filename]);
+    let raster = await load(args[filename]);
 
     // Step #3: Update output(s)
     raster.preview(document.querySelector(`#node_${node_id} .preview`) || document.body);
@@ -120,7 +148,7 @@ export class Loader extends Observer {
   }
   
   
-  loader(file) {
+  load(file) {
     console.log('LOAD');
     let path = file.name;
     let extension = path.split('.').pop();

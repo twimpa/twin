@@ -27,12 +27,13 @@
 import {Node} from '../gui/node.js';
 import {Observer} from '../core/Observer';
 
-export class Monitor extends Observer {
+export default class Monitor extends Observer {
 
   /**
    * @constructor
    */
   constructor() {
+    super();
     this.state = {
       value: 0
     }
@@ -41,21 +42,29 @@ export class Monitor extends Observer {
   /**
    * Create Node GUI
    */
-  createMarkup(node_id,state) {
-    const template_ui =    {
-    "id": "TWIN_MONITOR",
-    "class": "information",
-    "description": "Monitor",
-    "tags": ["console","display","log","print","show","tap"],
-    "help": ["Look at data through the pipeline. Network tap https://en.wikipedia.org/wiki/Network_tap"],
-    "properties": [
-      {"label": "Data", "output": "metadata","name":"out_data"},
-      {"label": "Data", "input": "metadata","name": "in_data"},
-      {"text": "null","name": "log"}
-    ]
-  };
+  createMarkup(node_id,metadata) {
+    const template_ui = {
+      "id": "TWIN_MONITOR",
+      "class": "information",
+      "description": "Monitor",
+      "tags": ["console","display","log","print","show","tap"],
+      "help": ["Look at data through the pipeline. Network tap https://en.wikipedia.org/wiki/Network_tap"],
+      "rows": [
+        [
+          {"widget":"label","title": "Data"}, 
+          {"widget": "output","name":"out_data:any"}
+        ],
+        [
+          {"widget":"label","title": "Data"}, 
+          {"widget": "input","name": "in_data:any"}
+        ],
+        [
+          {"widget":"text", "state": "null","name": "log:string"}
+        ]
+      ]
+    };
   
-    this.node = new Node(node_id,template_ui,this.state);
+    this.node = new Node(node_id,template_ui,metadata);
   }
 
   /**

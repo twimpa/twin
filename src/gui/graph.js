@@ -98,12 +98,17 @@ export class Graph {
     // Create Graph
     nodes.forEach( (node) => {
       // Step #1: Get component
-      let component = NodeFactory.get(node.id);
+      let component = NodeFactory.get(node.template);
       // Step #2:  Update states
-      
+      // TODO component.setState(node.state);
       // Step #3:  Create GUI
-      component.createMarkup();
-      this.appendNode(component);
+      console.log('NODE',node.id,node.template,component);
+      component.createMarkup(node.id,node.metadata);
+      this.nodes.push(component.node);
+      this.root.appendChild(component.node.element);
+      // Add the engine in the queue waiting for execution (the `Consumer`).
+      // TODO this.pipeline.add(component);
+      // this.appendNode(component);
       // this.appendNode(NodeFactory.node.template,node.id,node.metadata);
       /*
       // Attach node to <root>

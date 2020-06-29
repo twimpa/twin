@@ -51,9 +51,11 @@ export class NodeFactory {
       case "TWIN_MATHS": break;
       case "TWIN_MATHS_ADV": break;
       case "TWIN_MERGE_COLORS": break;
+      case "TWIN_MONITOR": return new TWC.Monitor();
       case "TWIN_MONTAGE": break;
       case "TWIN_NEW": break;
-      case "TWIN_OPEN_RASTER": break;
+      case "TWIN_NUMBER": return new TWC.NumberComponent();
+      case "TWIN_OPEN_RASTER": return new TWC.Loader();
       case "TWIN_PROJECT": break;
       case "TWIN_RANGE": break;
       case "TWIN_RESIZE": break;

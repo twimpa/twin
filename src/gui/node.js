@@ -42,6 +42,7 @@ export class Node extends Draggable {
   constructor(id,template,metadata) {
     super();
     this.id = id;
+    console.log('NODE',id);
     this.template = template;
     this.element = document.createElement('section');
 
