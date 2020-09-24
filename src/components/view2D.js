@@ -60,7 +60,7 @@ export const number = async (node_id,states) => {
 */
 
 
-export default class NumberComponent extends Observer {
+export default class View2D extends Observer {
 
   /**
    * @constructor
@@ -76,16 +76,29 @@ export default class NumberComponent extends Observer {
    * Create Node GUI
    */
   createMarkup(node_id,metadata) {
+
     const template_ui =  {
-      "id": "TWIN_NUMBER",
-      "class": "programming",
-      "description": "Number",
-      "help": "Numeric node",
-      "tags": ["programming","variable","number", "set"],
+      "id": "TWIN_VIEW_2D",
+      "class": "viewer",
+      "description": "2D Viewer",
+      "help": "Display Image",
+      "tags": ["show","display","view", "image"],
       "rows": [
         [
-          {"widget": "numerical", "state": 0,"name": "value:number"},
-          {"widget": "output", "title": "Value"}
+          {"widget": "label", "title": "Raster"},
+          {"widget": "output", "name": "raster2d:raster"}
+        ],
+        [
+          {"widget": "label", "title": "Backdrop"},
+          {"widget": "checkbox", "state": false,"name": "backdrop: boolean"}
+        ],
+        [
+          {"widget": "label", "title": "Preview"},
+          {"widget": "checkbox", "state": false,"name": "preview: boolean"}
+        ],
+        [
+          {"widget": "input", "name": "raster2d:raster"},
+          {"widget": "label", "title": "Raster"}
         ]
       ]
     }

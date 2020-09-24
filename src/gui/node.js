@@ -47,10 +47,10 @@ export class Node extends Draggable {
     this.element = document.createElement('section');
 
     // Check if `node` requires a preview
-    this.preview = template.properties.some( p => p.preview !== undefined) || template.preview;
-    this.hasLayers = template.properties.some( (p) => p.layer !== undefined);
-    this.hasOutputs = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'output') || p.output !== undefined);
-    this.hasInputs  = template.properties.some( (p) => (p.layer !== undefined && p.layer.type === 'input')  || p.input !== undefined);
+    this.preview = template.rows.some( p => p.preview !== undefined) || template.preview;
+    this.hasLayers = template.rows.some( (p) => p.layer !== undefined);
+    this.hasOutputs = template.rows.some( (p) => (p.layer !== undefined && p.layer.type === 'output') || p.output !== undefined);
+    this.hasInputs  = template.rows.some( (p) => (p.layer !== undefined && p.layer.type === 'input')  || p.input !== undefined);
 
     // Create Widgets
     this.createMarkup(id,template,metadata);
@@ -74,7 +74,7 @@ export class Node extends Draggable {
   }
   
   getArguments() {
-    return this.template.properties.map( p => {
+    return this.template.rows.map( p => {
       const type = (p.input)  ? 'TO' : ( (p.output) ? 'FROM': 'AT');
       return `${p.name}__${type}__${this.id}`;
     });
@@ -200,7 +200,7 @@ export class Node extends Draggable {
     body.className = 'body';
     // Main content
 
-    NodeGUI.createContent( template.properties,body,this.id, metadata);
+    NodeGUI.createContent( template.rows,body,this.id, metadata);
 
     return body;
   }
@@ -239,7 +239,7 @@ export class Node extends Draggable {
 
     let foot = document.createElement('div');
     foot.className = 'footer';
-    foot.innerHTML = `<span style="align:right;margin:2px">${node.class} #${node.id}</span>`;
+    foot.innerHTML = `<span style="align:right;margin:2px">${node.class}::${node.description}</span>`;
     let link = document.createElement('a');
     foot.appendChild(link);
     link.dataset.nodeid = id;

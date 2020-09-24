@@ -120,6 +120,7 @@ export const Functions = {
   TWIN_VIDEO: 41,
   TWIN_VIEW_2D: 42,
   TWIN_VIEW_3D: 43,
+  TWIN_MONITOR: 44,
   TWIN_VIEW_PLOT: 45,
   TWIN_VIEW_STACK: 46,
   TWIN_ZIP: 47 

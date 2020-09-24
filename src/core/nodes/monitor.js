@@ -25,20 +25,28 @@
 'use strict';
 
 /*
- * Tiny Web Components: GUI Node + Engine 
+ * Display in full-size a raster.
+ * This node triggers the pipeline of full-size raster(s).
+ * 
+ * @param {object} args - A collection of parameters
+ * 
+ * @author Jean-Christophe Taveau.
  */
-import Loader from './loader.js';
-import Maths from './maths.js';
-import Monitor from './monitor.js';
-import NumberComponent from './number.js';
-import ToStack from './toStack.js';
-import View2D from './view2D.js';
+export const monitor = async (node_id,args) => {
+  // Step #1: Find the input(s) or node variable.s
+  let arg_names = TWIN.graph.getNode(node_id).getArguments();
+  const input = arg_names.find( a => a.includes(`in_data__`) );
+  
+  // Step #2: Run if `input` available
+  if (input) {
+    _monitor(node_id,args[input]);
+  }
+  return args;
+}
 
-export {
-  Loader,
-  Maths,
-  Monitor,
-  NumberComponent,
-  ToStack,
-  View2D
+// Private
+const _monitor = (id,an_input) => {
+  let area = document.querySelector(`#node_${id} textarea`);
+  area.innerHTML = an_input.toString() || JSON.stringify(an_input);
+  
 }

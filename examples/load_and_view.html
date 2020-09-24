@@ -61,34 +61,24 @@
           id: 11,
           template:"TWIN_NUMBER",
           metadata: {
-            pos: [717,256],
+            pos: [722,412],
           },
           state: {
-            value: 4
-          }
-        },
-        {
-          id: 13,
-          template:"TWIN_NUMBER",
-          metadata: {
-            pos: [717,256],
-          },
-          state: {
-            value: 8
+            value: 46
           }
         },
         {
           id: 15,
-          template:"TWIN_ADD",
+          template:"TWIN_MATHS",
           metadata: {
-            pos: [717,256],
-          }
+            pos: [939,288],
+          },
         },
         {
           id: 22,
           template:"TWIN_VIEW_2D",
           metadata: {
-            pos: [917,256],
+            pos: [1143,231],
           }
         }
       ],
@@ -99,19 +89,15 @@
         },
         {
           eid: 2,
-          sockets: ['out_data@5','raster2d@22'],
+          sockets: ['out_data@5','value1@15'],
         },
         {
           eid: 3,
-          sockets: ['value@11','a@15'],
+          sockets: ['value@11','value2@15'],
         },
         {
           eid: 4,
-          sockets: ['value@13','b@15'],
-        },
-        {
-          eid: 5,
-          sockets: ['y@15','raster2d@22'],
+          sockets: ['value@15','raster2d@22'],
         }
       ]
     };

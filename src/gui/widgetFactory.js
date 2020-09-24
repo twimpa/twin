@@ -42,18 +42,24 @@ export class WidgetFactory {
    * 
    * @author Jean-Christophe Taveau
    */
-  static createRow(node_id, template_row, metadata, callback) {
+  static createRow(node_id, cells, metadata, callback) {
     // Extract widget type
-    let widgets = Object.keys(template_row).filter( prop => ['label','widget'].indexOf(prop) !== -1);
-    let numcolumns = cells.filter( type => ['collapsible','input','output','source','name','zip'].indexOf(type) === -1).length;
+    // let widgets = Object.keys(cells).filter( prop => ['label','widget'].indexOf(prop.widget) !== -1);
+    let numcolumns = cells.length; // filter( type => ['collapsible','input','output','source','name','zip'].indexOf(type) === -1).length;
     let container = document.createElement('div');
     container.className = `row-${numcolumns}`;
 
-    cells.forEach( type => {
-      console.log(type,template_row,metadata);
-      let widget = WidgetFactory.createWidget(node_id,type,template_row,metadata,callback);
+    cells.forEach( cell => {
+      console.log(cell.widget,cell,metadata);
+      let widget = WidgetFactory.createWidget(node_id,cell.widget,cell,metadata,callback);
       console.log(widget);
       container.appendChild(widget);
+      if (cell.widget === 'input') {
+        container.classList.add('in_socket');
+      }
+      else if (cell.widget === 'output') {
+        container.classList.add('out_socket');
+      }
     });
 
     console.log(container);
@@ -234,7 +240,7 @@ export class WidgetFactory {
     let e = document.createElement('label');
     e.className = 'button';
     e.setAttribute('for',inp.id);
-    e.innerHTML = row.file;
+    e.innerHTML = row.title;
     container.appendChild(inp);
     container.appendChild(e);
     return container;
@@ -282,7 +288,7 @@ export class WidgetFactory {
    */
   static label(id,row,metadata,action_func) {
     let e = document.createElement('label');
-    e.innerHTML = row.label;
+    e.innerHTML = row.title;
     if (row.output === undefined && row.input === undefined) {
       e.innerHTML += '&nbsp;';
     }
@@ -302,15 +308,15 @@ export class WidgetFactory {
 
     // Create Numerical
     let input = document.createElement('input');
-    input.id = `${template_row.name || 'unknown'}__AT__${id}`;
+    input.id = `${template_row.name.split(':')[0] || 'unknown'}__AT__${id}`;
     input.className = "numerical";
     input.setAttribute("type", "text");
     input.setAttribute('name',template_row.name || 'unknown');
     input.setAttribute('minlength',4);
     input.setAttribute('maxlength',40);
     // input.setAttribute('size',10);
-    input.setAttribute('value',metadata[template_row.name] || template_row.numerical);
-    TWIN.args[input.id] = metadata[template_row.name] || template_row.numerical;
+    input.setAttribute('value',metadata[template_row.name] || template_row.state);
+    TWIN.args[input.id] = metadata[template_row.name] || template_row.state;
     input.addEventListener('input',(event)=> {
       let value = event.srcElement.value;
       event.srcElement.value = /^\d*\.?\d*$/.test(event.srcElement.value) ? value : value.slice(0,-1);
@@ -354,7 +360,7 @@ export class WidgetFactory {
     let container = document.createElement('div');
     container.className = "select-container";
     let select = document.createElement('select');
-    let options = row.select.reduce( (html,item,index) => html + `<option value="${index}">${item}</option>`,'');
+    let options = row.items.reduce( (html,item,index) => html + `<option value="${index}">${item}</option>`,'');
     select.innerHTML = options;
     container.appendChild(select);
     return container;

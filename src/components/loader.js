@@ -24,7 +24,6 @@
 
 'use strict';
 
-
 import {PNMDecoder} from './io/PNMDecoder.js';
 import {CSVDecoder} from './io/CSVDecoder.js';
 import {TWRaster} from '../core/TWRaster.js';
@@ -66,7 +65,10 @@ export default class Loader extends Observer {
       ]
     };
   
+    // Step #1: Create Node GUI from template and metadata (if available)
     this.node = new Node(node_id,template_ui,metadata);
+    
+    // Step #2: Add Specific Events...
   }
   
   

@@ -60,7 +60,7 @@ export const number = async (node_id,states) => {
 */
 
 
-export default class NumberComponent extends Observer {
+export default class Math extends Observer {
 
   /**
    * @constructor
@@ -76,20 +76,34 @@ export default class NumberComponent extends Observer {
    * Create Node GUI
    */
   createMarkup(node_id,metadata) {
+
     const template_ui =  {
-      "id": "TWIN_NUMBER",
+      "id": "TWIN_MATH",
       "class": "programming",
-      "description": "Number",
-      "help": "Numeric node",
-      "tags": ["programming","variable","number", "set"],
+      "description": "Arithmetic",
+      "help": "Arithmetic operations",
+      "tags": ["programming","maths","add", "subtract", "multiply", "divide"],
       "rows": [
         [
-          {"widget": "numerical", "state": 0,"name": "value:number"},
-          {"widget": "output", "title": "Value"}
+          {"widget": "label", "title": "Value"},
+          {"widget": "output", "name": "value:number" }
+        ],
+        [
+          {"widget": "label", "title": "Op."},
+          {"widget": "select", "state": 0, "items": ["None","Add","Subtract","Multiply","Divide","AND","OR","XOR","Average","Difference"]},
+        ],
+        [
+          {"widget": "input", "name": "value1:any"},
+          {"widget": "label", "title": "Value #1"},
+        ],
+        [
+          {"widget": "input", "name": "value2:any"},
+          {"widget": "label", "title": "Value #2"}
         ]
       ]
     }
   
+    // Step #1: Create Node GUI from template and metadata (if available)
     this.node = new Node(node_id,template_ui,metadata);
   }
 

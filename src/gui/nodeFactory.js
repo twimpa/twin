@@ -48,7 +48,7 @@ export class NodeFactory {
       case "TWIN_INFO": break;
       case "TWIN_INSPECT": break;
       case "TWIN_MATH_MACRO": break;
-      case "TWIN_MATHS": break;
+      case "TWIN_MATHS": return new TWC.Maths();
       case "TWIN_MATHS_ADV": break;
       case "TWIN_MERGE_COLORS": break;
       case "TWIN_MONITOR": return new TWC.Monitor();
@@ -74,7 +74,7 @@ export class NodeFactory {
       case "TWIN_TRANSFORM": break;
       case "TWIN_TYPE": break;
       case "TWIN_VIDEO": break;
-      case "TWIN_VIEW_2D": break;
+      case "TWIN_VIEW_2D": return new TWC.View2D();
       case "TWIN_VIEW_3D": break;
       case "TWIN_VIEW_PLOT": break;
       case "TWIN_VIEW_PLOT": break;

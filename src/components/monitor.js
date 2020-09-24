@@ -55,8 +55,9 @@ export default class Monitor extends Observer {
           {"widget": "output","name":"out_data:any"}
         ],
         [
-          {"widget":"label","title": "Data"}, 
-          {"widget": "input","name": "in_data:any"}
+          {"widget": "input","name": "in_data:any"},
+          {"widget":"label","title": "Data"}
+
         ],
         [
           {"widget":"text", "state": "null","name": "log:string"}
